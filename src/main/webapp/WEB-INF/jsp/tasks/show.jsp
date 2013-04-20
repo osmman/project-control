@@ -12,9 +12,8 @@
 <body>
 	<p>
 		items in your cart :<br />
-		${it.tasks}<br />
 		<c:forEach var="task" items="${it.tasks}">
-		${task.title}<br />
+        ${task}<br />
 		</c:forEach>
 	</p>
 </body>

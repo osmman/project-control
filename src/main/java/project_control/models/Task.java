@@ -9,7 +9,11 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 import javax.jdo.annotations.Element;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement
 @PersistenceCapable
 public class Task {
 	@PrimaryKey
@@ -17,9 +21,11 @@ public class Task {
     private Key key;
 	
 	@Persistent
+	@Size(min = 3, max = 80)
 	private String title;
 	
 	@Persistent
+	@NotNull
 	private Date createdAt;
 	
 	@Persistent(mappedBy = "parentTask")
