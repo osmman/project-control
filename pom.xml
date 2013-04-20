@@ -88,6 +88,7 @@
 			<groupId>org.datanucleus</groupId>
 			<artifactId>datanucleus-core</artifactId>
 			<version>3.1.3</version>
+			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
 
@@ -124,6 +125,11 @@
 				<groupId>com.google.appengine</groupId>
 				<artifactId>appengine-maven-plugin</artifactId>
 				<version>${appengine.target.version}</version>
+			</plugin>
+			<plugin>
+				<groupId>org.datanucleus</groupId>
+				<artifactId>maven-datanucleus-plugin</artifactId>
+				<version>3.1.3</version>
 				<configuration>
 				    <api>JDO</api>
 				    <verbose>true</verbose>

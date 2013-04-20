@@ -16,7 +16,7 @@ import project_control.models.Task;
 
 import com.sun.jersey.api.view.Viewable;
 
-@Path("/tasks")
+@Path("tasks")
 public class TasksController {
 
 	@GET
