@@ -25,23 +25,9 @@ import project_control.models.Task;
 @Path("info") /* Maps the service on url localhost:8888/api/info/ */
 public class GreetingService {
  
-//    @GET /* Response on the GET request */
-//    @Produces("text/plain") /* The result of response is plain text */
-//    public String helloWorld() {
-//    	PersistenceManager pm = PMF.get().getPersistenceManager();
-//    	return "Hello world!!!";
-//    }
-	{
-		Logger.getLogger("com.sun.jersey").setLevel(Level.FINEST);
-	}
-    
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Viewable index() {
-		
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("tasks", new LinkedList<Task>());
-		System.out.println("###################################");
-		return new Viewable("/tasks/index", map);
-	}
+    @GET /* Response on the GET request */
+    @Produces("text/plain") /* The result of response is plain text */
+    public String helloWorld() {
+    	return "Hello world!!!";
+    }
 }
