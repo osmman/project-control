@@ -3,6 +3,22 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
+
+	<filter>
+	    <filter-name>LogFilter</filter-name>
+	    <filter-class>
+	        project_control.core.filters.LogFilter
+	    </filter-class>
+	    <init-param>
+	        <param-name>test-param</param-name>
+	        <param-value>This parameter is for testing.</param-value>
+	    </init-param>
+	</filter>
+	<filter-mapping>
+	    <filter-name>LogFilter</filter-name>
+	    <url-pattern>/*</url-pattern>
+	</filter-mapping>
+
 	<filter>
 		<filter-name>jersey</filter-name>
 		<filter-class>com.sun.jersey.spi.container.servlet.ServletContainer</filter-class>
@@ -23,6 +39,7 @@
 		<filter-name>jersey</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
+
 
 	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>
