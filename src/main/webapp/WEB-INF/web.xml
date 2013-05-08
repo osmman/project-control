@@ -18,7 +18,34 @@
 	    <filter-name>LogFilter</filter-name>
 	    <url-pattern>/*</url-pattern>
 	</filter-mapping>
+	
+<!-- 	<filter>
+	    <filter-name>AuthorizationFilter</filter-name>
+	    <filter-class>project_control.core.filters.AuthorizationFilter</filter-class>
+	</filter>
+	<filter-mapping>
+	    <filter-name>AuthorizationFilter</filter-name>
+	    <url-pattern>/*</url-pattern>
+	</filter-mapping> -->
 
+	<servlet>
+	    <servlet-name>TokenRequest</servlet-name>
+	    <servlet-class>project_control.core.TokenRequestServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	    <servlet-name>TokenRequest</servlet-name>
+	    <url-pattern>/tokenrequest</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+	    <servlet-name>TokenCallback</servlet-name>
+	    <servlet-class>project_control.core.TokenCallbackServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	    <servlet-name>TokenCallback</servlet-name>
+	    <url-pattern>/tokencallback</url-pattern>
+	</servlet-mapping>
+	
 	<filter>
 		<filter-name>jersey</filter-name>
 		<filter-class>com.sun.jersey.spi.container.servlet.ServletContainer</filter-class>
@@ -32,7 +59,7 @@
 		</init-param>
 		<init-param>
 			<param-name>com.sun.jersey.config.property.WebPageContentRegex</param-name>
-			<param-value>/(resources|(WEB-INF/jsp)|assets|_ah)/.*</param-value>
+			<param-value>(/(resources|(WEB-INF/jsp)|assets|_ah)/.*)|/tokencallback|/tokenrequest</param-value>
 		</init-param>
 	</filter>
 	<filter-mapping>
@@ -40,7 +67,15 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
-
+	<security-constraint>
+        <web-resource-collection>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>*</role-name>
+        </auth-constraint>
+    </security-constraint>
+	
 	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
