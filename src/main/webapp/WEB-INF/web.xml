@@ -4,6 +4,25 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
 
+     <servlet>
+	   <servlet-name>OAuth2Callback</servlet-name>
+	   <servlet-class>project_control.core.OAuth2Callback</servlet-class>
+	 </servlet>
+	
+	 <servlet-mapping>
+	   <servlet-name>OAuth2Callback</servlet-name>
+	   <url-pattern>/oauth2callback</url-pattern>
+	 </servlet-mapping>
+
+ 	 <servlet>
+	   <servlet-name>OAuth2Servlet</servlet-name>
+	   <servlet-class>project_control.core.OAuth2Servlet</servlet-class>
+	 </servlet>
+	 <servlet-mapping>
+	   <servlet-name>OAuth2Servlet</servlet-name>
+	   <url-pattern>/test</url-pattern>
+	 </servlet-mapping>
+	 
 	<filter>
 	    <filter-name>LogFilter</filter-name>
 	    <filter-class>
@@ -19,33 +38,6 @@
 	    <url-pattern>/*</url-pattern>
 	</filter-mapping>
 	
-<!-- 	<filter>
-	    <filter-name>AuthorizationFilter</filter-name>
-	    <filter-class>project_control.core.filters.AuthorizationFilter</filter-class>
-	</filter>
-	<filter-mapping>
-	    <filter-name>AuthorizationFilter</filter-name>
-	    <url-pattern>/*</url-pattern>
-	</filter-mapping> -->
-
-	<servlet>
-	    <servlet-name>TokenRequest</servlet-name>
-	    <servlet-class>project_control.core.TokenRequestServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-	    <servlet-name>TokenRequest</servlet-name>
-	    <url-pattern>/tokenrequest</url-pattern>
-	</servlet-mapping>
-	
-	<servlet>
-	    <servlet-name>TokenCallback</servlet-name>
-	    <servlet-class>project_control.core.TokenCallbackServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-	    <servlet-name>TokenCallback</servlet-name>
-	    <url-pattern>/tokencallback</url-pattern>
-	</servlet-mapping>
-	
 	<filter>
 		<filter-name>jersey</filter-name>
 		<filter-class>com.sun.jersey.spi.container.servlet.ServletContainer</filter-class>
@@ -59,7 +51,7 @@
 		</init-param>
 		<init-param>
 			<param-name>com.sun.jersey.config.property.WebPageContentRegex</param-name>
-			<param-value>(/(resources|(WEB-INF/jsp)|assets|_ah)/.*)|/tokencallback|/tokenrequest</param-value>
+			<param-value>(/(resources|(WEB-INF/jsp)|assets|_ah)/.*)|/oauth2callback|/test</param-value>
 		</init-param>
 	</filter>
 	<filter-mapping>
@@ -74,6 +66,9 @@
         <auth-constraint>
             <role-name>*</role-name>
         </auth-constraint>
+        <user-data-constraint>
+		    <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+		</user-data-constraint>
     </security-constraint>
 	
 	<welcome-file-list>
