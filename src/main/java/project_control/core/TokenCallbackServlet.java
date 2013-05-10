@@ -47,7 +47,7 @@ public class TokenCallbackServlet extends HttpServlet {
     		    		// The clientId and clientSecret are copied from the API Access tab on
     				    // the Google APIs Console
     				    String clientId = "331684805094.apps.googleusercontent.com";
-    				    String clientSecret = "aijzwOrDJI_ko6f1DOBzNrCP";
+    				    String clientSecret = "xxx";
 
     				    // Or your redirect URL for web based applications.
     				    String redirectUrl = "https://wa2-project-control.appspot.com/tokencallback";
