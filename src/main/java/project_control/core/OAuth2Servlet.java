@@ -31,11 +31,15 @@ public class OAuth2Servlet extends AbstractAppEngineAuthorizationCodeServlet {
 	    writer.println("<title></title>");
 	    
 	    UserService userService = UserServiceFactory.getUserService();
+	    
+	    com.google.api.services.calendar.Calendar calendar = OAuth2Utils.loadCalendarClient();
+	    
+	    
 	    writer.println("<div class=\"header\"><b>" + request.getUserPrincipal().getName() + "</b> | "
 	        + "<a href=\"" + userService.createLogoutURL(request.getRequestURL().toString())
 	        + "\">Log out</a> | "
 	        + "<a href=\"http://code.google.com/p/google-api-java-client/source/browse"
-	        + "/calendar-appengine-sample?repo=samples\">See source code for "
+	        + "/calendar-appengine-sample?repo=samples\">See source code for " + calendar.calendarList().list().execute().size()
 	        + "this sample</a></div>");
 	    writer.println("<div id=\"main\"/>");
 	    writer.println("</body></html>");

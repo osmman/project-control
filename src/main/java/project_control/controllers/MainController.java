@@ -15,6 +15,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import project_control.core.OAuth2Utils;
 import project_control.models.Calendar;
 
 import com.google.api.client.auth.oauth2.AuthorizationCodeFlow;
@@ -54,6 +55,13 @@ public class MainController {
 //		} catch (IOException e) {
 //			e.printStackTrace();
 //		}
+		
+		try {
+			com.google.api.services.calendar.Calendar calendar = OAuth2Utils.loadCalendarClient();
+			map.put("calendar",calendar.calendarList().list().execute().size());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		return Response.ok(new Viewable("/index",map)).build();
 	}

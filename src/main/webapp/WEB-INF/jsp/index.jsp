@@ -15,8 +15,8 @@
 <title>Insert title here</title>
 </head>
 <body>
-
-	<h1>Hello, world!</h1>
+	
+	<h1>Hello, world!${it.calendar}</h1>
 	<c:choose>
 		<c:when test="${it.user != null}">
 			<p>
