@@ -50,8 +50,8 @@ public class TokenCallbackServlet extends HttpServlet {
     				    String clientSecret = "aijzwOrDJI_ko6f1DOBzNrCP";
 
     				    // Or your redirect URL for web based applications.
-    				    //String redirectUrl = "https://wa2-project-control.appspot.com/tokencallback";
-    				    String redirectUrl = "http://localhost:8080/tokencallback";
+    				    String redirectUrl = "https://wa2-project-control.appspot.com/tokencallback";
+    				    //String redirectUrl = "http://localhost:8080/tokencallback";
     				    				    
     		    		GoogleTokenResponse response =
     		    	          new GoogleAuthorizationCodeTokenRequest(new NetHttpTransport(), new JacksonFactory(),
