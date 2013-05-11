@@ -17,7 +17,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @PersistenceCapable
 public class User {
-	@PrimaryKey
     @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
     private Key key;
 	
@@ -26,6 +25,7 @@ public class User {
 	private String name;
 	
 	@Persistent
+	@PrimaryKey
 	@Size(min = 3, max = 80)
 	private String email;
 	

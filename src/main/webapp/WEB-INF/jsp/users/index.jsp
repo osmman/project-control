@@ -9,7 +9,6 @@
 </div>
 <table class="table table-bordered">
 	<tr>
-		<th>#</th>
 		<th>Name</th>
 		<th>Email</th>
 		<th>Phone</th>
@@ -17,11 +16,19 @@
 	</tr>
 	<c:forEach var="user" items="${it.users}">
 		<tr>
-			<td>${user.key}</td>
-			<td>${user.name}</td>
 			<td>${user.email}</td>
+			<td>${user.name}</td>
 			<td>${user.phone}</td>
-			<td><a href="/users/edit/?key=${user.key}" class="btn btn-primary">Edit</a><a href="/users/delete/?key=${user.key}" class="btn btn-danger">Edit</a></td>
+			<td>
+				<ul class="inline">
+					<li>
+						<form action="/users/edit" method="get"><button name="key" type="submit" value="${user.email}" class="btn btn-primary">Edit</button></form>
+					</li>
+					<li>
+						<form action="/users/delete" method="post"><button name="key" type="submit" value="${user.email}" class="btn btn-danger">Edit</button></form>
+					</li>
+				</ul>
+			</td>
 		</tr>
 	</c:forEach>
 </table>

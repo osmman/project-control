@@ -13,8 +13,10 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -23,6 +25,8 @@ import javax.ws.rs.PathParam;
 import project_control.core.*;
 import project_control.models.*;
 
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.sun.jersey.api.view.Viewable;
 
 @Path("users")
@@ -59,9 +63,6 @@ public class UsersController {
 		      @FormParam("email") String email,
 		      @FormParam("phone") String phone,
 		      @Context HttpServletResponse servletResponse) {
-		System.err.println(name);
-		System.err.println(email);
-		System.err.println(phone);
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		User user = new User();
 		try {
@@ -76,12 +77,61 @@ public class UsersController {
 		
 		return index();
 	}
+	
+	@GET
+	@Path("edit")
+	@Produces(MediaType.TEXT_HTML)
+	public Response edit(@QueryParam("key") String key) {
+		Map<String, Object> map = new HashMap<String, Object>();
+
+		map.put("activePage", 2);
+		map.put("user", getUser(key));
+		map.put("title", "Users list - Edit");
+		map.put("page", "/users/edit.jsp");
+		return Response.ok(new Viewable("/users/router", map)).build();
+	}
+	
+	@POST
+	@Path("update")
+	@Produces(MediaType.TEXT_HTML)
+	public Response update(@FormParam("defEmail") String defEmail,
+			  @FormParam("name") String name,
+		      @FormParam("email") String email,
+		      @FormParam("phone") String phone,
+		      @Context HttpServletResponse servletResponse) {
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+	    try {
+	        User u = pm.getObjectById(User.class, defEmail);
+	        u.setName(name);
+	        u.setPhone(phone);
+	        pm.makePersistent(u);
+	    } finally {
+	        pm.close();
+	    }
+		
+		return index();
+	}
 
 	@GET
 	@Path("{task}")
 	@Produces(MediaType.TEXT_HTML)
 	public Response show(@PathParam("task") String taskId) {
 		return Response.ok(new Viewable("/tasks/show")).build();
+	}
+	
+	@POST
+	@Path("delete")
+	@Produces(MediaType.TEXT_HTML)
+	public Response delete(@FormParam("key") String key) {
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+	    try {
+	        User u = pm.getObjectById(User.class, key);
+	        pm.deletePersistent(u);
+	    } finally {
+	        pm.close();
+	    }
+		
+		return index();
 	}
 	
 	
@@ -114,17 +164,12 @@ public class UsersController {
 	}
 	
 	@GET
+	@Path("{key}")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public List<User> getUser() {
+	public User getUser(@PathParam("key") String key) {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
-		Query q = pm.newQuery(User.class);
-		try {
-			List<User> results = (List<User>) q.execute();
-			System.err.println(results);
-			return results;
-		} finally {
-			q.closeAll();
-			pm.close();
-		}
+	    User u = pm.getObjectById(User.class, key);
+	    return u;
 	}
+	
 }
