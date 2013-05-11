@@ -72,7 +72,10 @@ public class UsersController {
 			user.setPhone(phone);
 			user.setCreatedAt(new Date());
 			pm.makePersistent(user);
-		} finally {
+		}catch(ConstraintViolationException e){
+			return new_item();
+		}
+		finally {
 			pm.close();
 		}
 		
@@ -107,7 +110,7 @@ public class UsersController {
 	        u.setPhone(phone);
 	        pm.makePersistent(u);
 		}catch(ConstraintViolationException e){
-			return new_item();
+			return edit(defEmail);
 		}
 	    finally {
 	        pm.close();
