@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolationException;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -71,7 +72,10 @@ public class UsersController {
 			user.setPhone(phone);
 			user.setCreatedAt(new Date());
 			pm.makePersistent(user);
-		} finally {
+		}catch(ConstraintViolationException e){
+			return new_item();
+		}
+		finally {
 			pm.close();
 		}
 		
@@ -105,7 +109,10 @@ public class UsersController {
 	        u.setName(name);
 	        u.setPhone(phone);
 	        pm.makePersistent(u);
-	    } finally {
+		}catch(ConstraintViolationException e){
+			return edit(defEmail);
+		}
+	    finally {
 	        pm.close();
 	    }
 		

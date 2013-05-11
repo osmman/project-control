@@ -112,6 +112,11 @@
 			<artifactId>google-api-services-drive</artifactId>
 			<version>v2-rev73-1.14.2-beta</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.bval</groupId>
+			<artifactId>bval-jsr303</artifactId>
+			<version>0.5</version>
+		</dependency>
 	</dependencies>
 
 	<build>
