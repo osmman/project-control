@@ -2,10 +2,13 @@ package project_control.controllers;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -27,32 +30,35 @@ import com.sun.jersey.api.view.Viewable;
 @Path("/")
 public class MainController {
 	
-//	@Context
-//	HttpServletRequest request;
-//	@Context
-//	HttpServletResponse response;
-//	@Context
-//	ServletContext context;
+	@Context
+	HttpServletRequest request;
+	@Context
+	HttpServletResponse response;
+	@Context
+	ServletContext context;
 	
 	@GET
 	@Produces(MediaType.TEXT_HTML)
-	public Response index() {
+	public Response index() throws ServletException, IOException, URISyntaxException {
 		Map<String, Object> map = new HashMap<String, Object>();
-//		try {
-//			CalendarList var = Calendar.getCalendars();
-//			System.out.println(var);
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
 		
-//		try {
-//			com.google.api.services.calendar.Calendar calendar = OAuth2Utils.loadCalendarClient();
-//			System.out.println(calendar.calendarList().list().execute().size());
-//			map.put("calendar",calendar.calendarList().list().execute().size());
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
+		try {
+			com.google.api.services.calendar.Calendar calendar = OAuth2Utils.loadCalendarClient();
+			System.out.println(calendar.calendarList().list().execute().size());
+			map.put("calendar",calendar.calendarList().list().execute().size());
+		} catch (IOException e) {
+			return onAuthorization(request, response);
+		}
 		return Response.ok(new Viewable("/index",map)).build();
+	}
+	
+	Response onAuthorization(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+		try {
+			return Response.temporaryRedirect(new URI("/test")).build();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		return Response.serverError().build();
 	}
 	
 }
