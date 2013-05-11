@@ -1,0 +1,100 @@
+package project_control.models;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+import com.google.appengine.api.datastore.Key;
+import javax.jdo.annotations.IdGeneratorStrategy;
+import javax.jdo.annotations.PersistenceCapable;
+import javax.jdo.annotations.Persistent;
+import javax.jdo.annotations.PrimaryKey;
+import javax.jdo.annotations.Element;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
+@PersistenceCapable
+public class User {
+	@PrimaryKey
+    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+    private Key key;
+	
+	@Persistent
+	@Size(min = 3, max = 80)
+	private String name;
+	
+	@Persistent
+	@Size(min = 3, max = 80)
+	private String email;
+	
+	@Persistent
+	@Size(min = 9, max = 15)
+	private String phone;
+
+	@Persistent
+	@NotNull
+	private Date createdAt;
+	
+//	@Persistent(mappedBy = "assigner")
+//	private List<Task> assignedTasks;
+	
+	@Persistent(mappedBy = "creater")
+	private List<Task> createdTasks;
+	
+//	@Persistent(mappedBy = "finisher")
+//	private List<Task> finishedTasks;
+
+
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public Key getKey() {
+		return key;
+	}
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+//	public List<Task> getAssignedTasks() {
+//		return assignedTasks;
+//	}
+
+	public List<Task> getCreatedTasks() {
+		return createdTasks;
+	}
+
+//	public List<Task> getFinishedTasks() {
+//		return finishedTasks;
+//	}
+
+	
+	
+}

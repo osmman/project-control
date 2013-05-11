@@ -28,12 +28,18 @@ public class Task {
 	@NotNull
 	private Date createdAt;
 	
-	@Persistent(mappedBy = "parentTask")
-	@Element(dependent = "true")
-	private Set<Task> subtasks;
+//	@Persistent(mappedBy = "parentTask")
+//	@Element(dependent = "true")
+//	private Set<Task> subtasks;
+	
+//	@Persistent
+//	private Task parentTask;
+	
 	
 	@Persistent
-	private Task parentTask;
+	private User creater;
+	
+
 
 	public String getTitle() {
 		return title;
@@ -51,29 +57,29 @@ public class Task {
 		this.createdAt = createdAt;
 	}
 
-	public Set<Task> getSubtasks() {
-		return subtasks;
-	}
-
-	public void setSubtasks(Set<Task> subtasks) {
-		this.subtasks = subtasks;
-	}
+//	public Set<Task> getSubtasks() {
+//		return subtasks;
+//	}
+//
+//	public void setSubtasks(Set<Task> subtasks) {
+//		this.subtasks = subtasks;
+//	}
 	
-	public void addSubtask(Task task){
-		subtasks.add(task);
-	}
-	
-	public void removeSubtask(Task task){
-		subtasks.remove(task);
-	}
+//	public void addSubtask(Task task){
+//		subtasks.add(task);
+//	}
+//	
+//	public void removeSubtask(Task task){
+//		subtasks.remove(task);
+//	}
 
-	public Task getParentTask() {
-		return parentTask;
-	}
-
-	public void setParentTask(Task parentTask) {
-		this.parentTask = parentTask;
-	}
+//	public Task getParentTask() {
+//		return parentTask;
+//	}
+//
+//	public void setParentTask(Task parentTask) {
+//		this.parentTask = parentTask;
+//	}
 
 	public Key getKey() {
 		return key;
