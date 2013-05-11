@@ -122,6 +122,11 @@
 			<artifactId>google-oauth-client-servlet</artifactId>
 			<version>1.14.1-beta</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.bval</groupId>
+			<artifactId>bval-jsr303</artifactId>
+			<version>0.5</version>
+		</dependency>
 	</dependencies>
 
 	<build>

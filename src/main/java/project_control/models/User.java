@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
+
 @XmlRootElement
 @PersistenceCapable
 public class User {
@@ -22,14 +23,17 @@ public class User {
     private Key key;
 	
 	@Persistent
+	@NotNull
 	@Size(min = 3, max = 80)
 	private String name;
 	
 	@Persistent
+	@NotNull
 	@Size(min = 3, max = 80)
 	private String email;
 	
 	@Persistent
+	@NotNull
 	@Size(min = 9, max = 15)
 	private String phone;
 

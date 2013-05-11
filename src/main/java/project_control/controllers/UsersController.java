@@ -1,5 +1,7 @@
 package project_control.controllers;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -9,6 +11,7 @@ import java.util.Map;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolationException;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -58,7 +61,7 @@ public class UsersController {
 	public Response create(@FormParam("name") String name,
 		      @FormParam("email") String email,
 		      @FormParam("phone") String phone,
-		      @Context HttpServletResponse servletResponse) {
+		      @Context HttpServletResponse servletResponse) throws URISyntaxException {
 		System.err.println(name);
 		System.err.println(email);
 		System.err.println(phone);
@@ -70,20 +73,15 @@ public class UsersController {
 			user.setPhone(phone);
 			user.setCreatedAt(new Date());
 			pm.makePersistent(user);
-		} finally {
+		}catch(ConstraintViolationException e){
+			return new_item();
+		}
+		finally {
 			pm.close();
 		}
-		
+		//return Response.ok().build();
 		return index();
 	}
-
-	@GET
-	@Path("{task}")
-	@Produces(MediaType.TEXT_HTML)
-	public Response show(@PathParam("task") String taskId) {
-		return Response.ok(new Viewable("/tasks/show")).build();
-	}
-	
 	
 //	@POST
 //	@Path("{task}")
@@ -114,9 +112,11 @@ public class UsersController {
 	}
 	
 	@GET
+	@Path("{user}")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public List<User> getUser() {
+	public List<User> getUser(@PathParam("user") String userId) {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
+		
 		Query q = pm.newQuery(User.class);
 		try {
 			List<User> results = (List<User>) q.execute();
