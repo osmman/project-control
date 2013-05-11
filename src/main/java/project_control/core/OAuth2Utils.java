@@ -12,9 +12,12 @@ import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.client.util.Preconditions;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
+import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.DriveScopes;
 import com.google.appengine.api.users.UserServiceFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,31 +60,33 @@ public class OAuth2Utils {
 	}
 
 	public static GoogleAuthorizationCodeFlow newFlow() throws IOException {
+		ArrayList<String> scope = new ArrayList<String>();
+		
+		scope.add(CalendarScopes.CALENDAR);
+		scope.add(DriveScopes.DRIVE_FILE);
+		
 		return new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT,
 				JSON_FACTORY, getClientCredential(),
-				Collections.singleton(CalendarScopes.CALENDAR))
+				scope)
 				.setCredentialStore(new AppEngineCredentialStore())
 				.setAccessType("offline").build();
 	}
 
-	public static Calendar loadCalendarClient() throws IOException {
+	public static Calendar getCalendarService() throws IOException {
 		String userId = UserServiceFactory.getUserService().getCurrentUser()
 				.getUserId();
 		Credential credential = newFlow().loadCredential(userId);
 		return new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
 				.build();
 	}
-
-	/**
-	 * Returns an {@link IOException} (but not a subclass) in order to work
-	 * around restrictive GWT serialization policy.
-	 */
-	public static IOException wrappedIOException(IOException e) {
-		if (e.getClass() == IOException.class) {
-			return e;
+	
+	public static Drive getDriveService() throws IOException {
+		String userId = UserServiceFactory.getUserService().getCurrentUser()
+				.getUserId();
+		Credential credential = newFlow().loadCredential(userId);
+		  return new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).build();
 		}
-		return new IOException(e.getMessage());
-	}
+
 
 	private OAuth2Utils() {
 	}

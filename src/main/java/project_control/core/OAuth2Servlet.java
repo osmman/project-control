@@ -33,7 +33,7 @@ public class OAuth2Servlet extends AbstractAppEngineAuthorizationCodeServlet {
 	    
 	    UserService userService = UserServiceFactory.getUserService();
 	    
-	    com.google.api.services.calendar.Calendar calendar = OAuth2Utils.loadCalendarClient();
+	    com.google.api.services.calendar.Calendar calendar = OAuth2Utils.getCalendarService();
 	    
 	    
 	    writer.println("<div class=\"header\"><b>" + request.getUserPrincipal().getName() + "</b> | "

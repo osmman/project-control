@@ -16,7 +16,7 @@
 </head>
 <body>
 	
-	<h1>Hello, world!${it.calendar}</h1>
+	<h1>Hello, world! ${it.calendar} ${it.files}</h1>
 	
 	<c:choose>
 		<c:when test="${user != null}">

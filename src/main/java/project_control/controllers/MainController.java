@@ -22,6 +22,7 @@ import javax.ws.rs.core.Response;
 
 import project_control.core.OAuth2Utils;
 
+import com.google.api.services.drive.Drive;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
@@ -36,9 +37,12 @@ public class MainController extends AbstractController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		
 		try {
-			com.google.api.services.calendar.Calendar calendar = OAuth2Utils.loadCalendarClient();
-			System.out.println(calendar.calendarList().list().execute().size());
+			Drive drive = OAuth2Utils.getDriveService();
+			com.google.api.services.calendar.Calendar calendar = OAuth2Utils.getCalendarService();
+			
+			
 			map.put("calendar",calendar.calendarList().list().execute().size());
+			map.put("files",drive.files().list().execute().size());
 		} catch (IOException e) {
 			return onAuthorization(request, response);
 		}
