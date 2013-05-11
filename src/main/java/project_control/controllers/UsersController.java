@@ -21,8 +21,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.PathParam;
 
 import project_control.core.*;
-import project_control.models.Task;
-import project_control.models.User;
+import project_control.models.*;
 
 import com.sun.jersey.api.view.Viewable;
 
