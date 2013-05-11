@@ -112,4 +112,19 @@ public class UsersController {
 			pm.close();
 		}
 	}
+	
+	@GET
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public List<User> getUser() {
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		Query q = pm.newQuery(User.class);
+		try {
+			List<User> results = (List<User>) q.execute();
+			System.err.println(results);
+			return results;
+		} finally {
+			q.closeAll();
+			pm.close();
+		}
+	}
 }
