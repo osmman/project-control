@@ -34,6 +34,7 @@ public class UsersController {
 	@Produces(MediaType.TEXT_HTML)
 	public Response index() {
 		Map<String, Object> map = new HashMap<String, Object>();
+		
 		map.put("users", getUsers());
 		map.put("activePage", 2);
 		map.put("title", "Users list");
@@ -104,7 +105,7 @@ public class UsersController {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		Query q = pm.newQuery(User.class);
 		try {
-			List<User> results = (LinkedList<User>) q.execute();
+			List<User> results = (List<User>) q.execute();
 			System.err.println(results);
 			return results;
 		} finally {

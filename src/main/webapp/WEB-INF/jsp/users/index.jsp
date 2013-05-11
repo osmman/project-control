@@ -14,8 +14,6 @@
 		<th>Phone</th>
 		<th>Actions</th>
 	</tr>
-	${it.users.get(1)}
-	
 	<c:forEach var="user" items="${it.users}">
 		<tr>
 			<td>${user.key}</td>
