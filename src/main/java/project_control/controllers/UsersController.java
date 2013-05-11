@@ -31,7 +31,7 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.sun.jersey.api.view.Viewable;
 
 @Path("users")
-public class UsersController {
+public class UsersController extends AbstractController {
 
 	
 	@GET
@@ -73,6 +73,7 @@ public class UsersController {
 			user.setCreatedAt(new Date());
 			pm.makePersistent(user);
 		}catch(ConstraintViolationException e){
+			errorMessage(e);
 			return new_item();
 		}
 		finally {
@@ -110,6 +111,7 @@ public class UsersController {
 	        u.setPhone(phone);
 	        pm.makePersistent(u);
 		}catch(ConstraintViolationException e){
+			request.setAttribute("message", e);
 			return edit(defEmail);
 		}
 	    finally {

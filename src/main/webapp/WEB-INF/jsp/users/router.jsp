@@ -1,3 +1,4 @@
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <jsp:include page="../template/application.jsp">
 	<jsp:param name="title" value="${it.title}"/>  
 	<jsp:param name="activePage" value="${it.activePage}"/> 
