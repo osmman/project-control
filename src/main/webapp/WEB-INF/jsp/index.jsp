@@ -17,24 +17,15 @@
 <body>
 	
 	<h1>Hello, world!${it.calendar}</h1>
+	
 	<c:choose>
-		<c:when test="${it.user != null}">
+		<c:when test="${user != null}">
 			<p>
 				Jste přihlášen jako
-				<c:out value="${it.user.nickname}" />
-				. <a href="${fn:escapeXml(it.url)}">Odhlásit se.</a>
+				<c:out value="${user.nickname}" />
+				. <a href="${fn:escapeXml(logoutUrl)}">Odhlásit se.</a>
 			</p>
 		</c:when>
-		<c:otherwise>
-
-			<p>Ještě nejste přihlášen.</p>
-
-			<p>
-				<a href="${fn:escapeXml(it.url)}">Přihlaste se pomocí Google
-					účtu.</a>
-			</p>
-			<br />
-		</c:otherwise>
 	</c:choose>
 	<!-- Placed at the end of the document so the pages load faster -->
 	<script src="/assets/js/jquery-1.9.1.min.js"></script>

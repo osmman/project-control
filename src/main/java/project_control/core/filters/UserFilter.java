@@ -15,26 +15,24 @@ import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
-public class LogFilter implements Filter {
+public class UserFilter implements Filter {
 
 	@Override
 	public void destroy() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void doFilter(ServletRequest arg0, ServletResponse arg1,
 			FilterChain chain) throws IOException, ServletException {
 
-		HttpServletRequest request = (HttpServletRequest) arg0;
+		HttpServletRequest req = (HttpServletRequest) arg0;
+		UserService userService = UserServiceFactory.getUserService();
+        User user = userService.getCurrentUser();
         
-        //Get the IP address of client machine.
-        String ipAddress = request.getRemoteAddr();
-        
-        //Log the IP address and current timestamp.
-        System.out.println("IP "+ipAddress + ", Time "
-                            + new Date().toString());
+        if (userService.isUserLoggedIn()) {
+        	req.setAttribute("user", user);
+        	req.setAttribute("logoutUrl", userService.createLogoutURL("/"));
+		}
         
         chain.doFilter(arg0, arg1);
 
@@ -42,11 +40,6 @@ public class LogFilter implements Filter {
 
 	@Override
 	public void init(FilterConfig config) throws ServletException {
-		//Get init parameter
-        String testParam = config.getInitParameter("test-param");
-         
-        //Print the init parameter
-        System.out.println("Test Param: " + testParam);
 	}
 
 }
