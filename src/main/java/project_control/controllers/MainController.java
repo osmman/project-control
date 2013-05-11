@@ -28,14 +28,7 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.sun.jersey.api.view.Viewable;
 
 @Path("/")
-public class MainController {
-	
-	@Context
-	HttpServletRequest request;
-	@Context
-	HttpServletResponse response;
-	@Context
-	ServletContext context;
+public class MainController extends AbstractController {
 	
 	@GET
 	@Produces(MediaType.TEXT_HTML)
@@ -52,13 +45,6 @@ public class MainController {
 		return Response.ok(new Viewable("/index",map)).build();
 	}
 	
-	Response onAuthorization(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
-		try {
-			return Response.temporaryRedirect(new URI("/test")).build();
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
-		return Response.serverError().build();
-	}
+	
 	
 }

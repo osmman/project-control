@@ -23,7 +23,7 @@ import project_control.models.Task;
 import com.sun.jersey.api.view.Viewable;
 
 @Path("tasks")
-public class TasksController {
+public class TasksController extends AbstractController {
 
 	
 	@GET

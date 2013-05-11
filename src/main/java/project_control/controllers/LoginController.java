@@ -18,7 +18,7 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.sun.jersey.api.view.Viewable;
 
 @Path("/login")
-public class LoginController {
+public class LoginController extends AbstractController {
 	@Context
 	HttpServletRequest r;
 

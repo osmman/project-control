@@ -23,7 +23,7 @@ import project_control.core.PMF;
 import project_control.models.Task;
  
 @Path("info") /* Maps the service on url localhost:8888/api/info/ */
-public class GreetingService {
+public class GreetingService extends AbstractController {
  
     @GET /* Response on the GET request */
     @Produces("text/plain") /* The result of response is plain text */

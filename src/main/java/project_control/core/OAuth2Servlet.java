@@ -22,6 +22,7 @@ public class OAuth2Servlet extends AbstractAppEngineAuthorizationCodeServlet {
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws IOException, ServletException {
 		
+		//throw new IOException();
 
 		response.setContentType("text/html");
 	    response.setCharacterEncoding("UTF-8");

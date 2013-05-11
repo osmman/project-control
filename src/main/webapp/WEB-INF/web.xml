@@ -20,7 +20,7 @@
 	 </servlet>
 	 <servlet-mapping>
 	   <servlet-name>OAuth2Servlet</servlet-name>
-	   <url-pattern>/test</url-pattern>
+	   <url-pattern>/oauth2request</url-pattern>
 	 </servlet-mapping>
 	 
 <!-- 	<filter>
@@ -60,7 +60,7 @@
 		</init-param>
 		<init-param>
 			<param-name>com.sun.jersey.config.property.WebPageContentRegex</param-name>
-			<param-value>(/(resources|(WEB-INF/jsp)|assets|_ah)/.*)|/oauth2callback|/test</param-value>
+			<param-value>(/(resources|(WEB-INF/jsp)|assets|_ah)/.*)|/oauth2callback|/oauth2request</param-value>
 		</init-param>
 	</filter>
 	<filter-mapping>
