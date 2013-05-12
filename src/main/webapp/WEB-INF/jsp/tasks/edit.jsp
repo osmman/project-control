@@ -58,6 +58,13 @@
 	</div>
 	
 	<div class="control-group">
+		<label class="control-label" for="textareaText">Text of task:</label>
+	    <div class="controls">
+	    	<textarea id="textareaText" name="text" rows="10">${it.task.text}</textarea>
+	    </div>
+	</div>
+	
+	<div class="control-group">
 		<div class="controls">
 	    	<button type="submit" class="btn btn-primary">Edit</button>
 	    </div>

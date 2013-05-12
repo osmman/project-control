@@ -17,8 +17,8 @@
 	</tr>
 	<c:forEach var="user" items="${it.users}">
 		<tr>
-			<td>${user.email}</td>
 			<td>${user.name}</td>
+			<td>${user.email}</td>
 			<td>${user.phone}</td>
 			<td>
 				<ul class="inline">

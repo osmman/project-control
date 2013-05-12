@@ -109,6 +109,7 @@ public class TasksController extends AbstractController {
 		      @FormParam("deadLineAt") String deadLineAt,
 		      @FormParam("assigned") String assigned,
 		      @FormParam("parent") Long parent,
+		      @FormParam("text") String text,
 		      @Context HttpServletResponse servletResponse) {
 		try {
 			PersistenceManager pm = PMF.get().getPersistenceManager();
@@ -120,6 +121,7 @@ public class TasksController extends AbstractController {
 		        t.setStartAt(formatter.parse(startAt));
 		        t.setDeadLineAt(formatter.parse(deadLineAt));
 		        t.setAssigned(assigned);
+		        t.setText(text);
 		        pm.makePersistent(t);
 		        calendar.updateEvent(t);
 			}catch(ConstraintViolationException e){
@@ -151,6 +153,7 @@ public class TasksController extends AbstractController {
 			@FormParam("deadLineAt") String deadLineAt,
 			@FormParam("assigned") String assigned,
 			@FormParam("parent") Long parent,
+		    @FormParam("text") String text,
 			@Context HttpServletResponse servletResponse) {
 		try {
 			Calendar calendar = new Calendar();
@@ -168,6 +171,7 @@ public class TasksController extends AbstractController {
 				task.setCreated(user.getEmail());
 				task.setAssigned(assigned);
 				task.setParentTask(parent);
+				task.setText(text);
 				pm.makePersistent(task);
 				task.setCalendarEventId(calendar.addEvent(task));
 				pm.makePersistent(task);

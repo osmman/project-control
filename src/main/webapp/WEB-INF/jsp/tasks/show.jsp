@@ -66,3 +66,6 @@
 		</td>
 	</tr>
 </table>
+<pre>
+	${it.task.text}
+</pre>
