@@ -45,12 +45,12 @@
 				<c:if test="${it.task.assigned != null}">
 					<option value=""></option>
 				</c:if>
-				<c:forEach var="user" items="${it.users}">
-					<c:if test="${it.task.assigned == user.email}">
-						<option value="${user.email}" selected="selected">${user.name}</option>
+				<c:forEach var="usera" items="${it.users}">
+					<c:if test="${it.task.assigned == usera.email}">
+						<option value="${usera.email}" selected="selected">${usera.name}</option>
 					</c:if>
-					<c:if test="${it.task.assigned != user.email}">
-						<option value="${user.email}" >${user.name}</option>
+					<c:if test="${it.task.assigned != usera.email}">
+						<option value="${usera.email}" >${usera.name}</option>
 					</c:if>
 				</c:forEach>
 			</select>
