@@ -34,9 +34,9 @@ public class OAuth2Utils {
 	/** Global instance of the JSON factory. */
 	static final JsonFactory JSON_FACTORY = new JacksonFactory();
 
-	static final String CLIENTSECRETS_LOCATION = "/client_secrets.json";
+	//static final String CLIENTSECRETS_LOCATION = "/client_secrets.json";
 
-	//static final String CLIENTSECRETS_LOCATION = "/client_secrets_production.json";
+	static final String CLIENTSECRETS_LOCATION = "/client_secrets_production.json";
 	
 	private static final List<String> SCOPES = Arrays.asList(
 			DriveScopes.DRIVE_FILE,
