@@ -45,6 +45,11 @@ public class OAuth2Servlet extends AbstractAppEngineAuthorizationCodeServlet {
 	    writer.println("<div id=\"main\"/>");
 	    writer.println("</body></html>");
 	}
+	
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException{
+		doGet(req, resp);
+	}
 
 	@Override
 	  protected String getRedirectUri(HttpServletRequest req) throws ServletException, IOException {
