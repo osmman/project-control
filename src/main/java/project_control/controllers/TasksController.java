@@ -48,7 +48,7 @@ public class TasksController extends AbstractController {
 		map.put("activePage", 3);
 		map.put("posible", possibleUser());
 		map.put("title", "Task list");
-		map.put("page", "/tasks/index.jsp");
+		map.put("page", "tasks/index.jsp");
 		return Response.ok(new Viewable("/tasks/router", map)).build();
 	}
 
@@ -63,7 +63,7 @@ public class TasksController extends AbstractController {
 		map.put("posible", possibleUser());
 		map.put("users", getUsers());
 		map.put("task", t);
-		map.put("page", "/tasks/new.jsp");
+		map.put("page", "tasks/new.jsp");
 		return Response.ok(new Viewable("/users/router", map)).build();
 	}
 
@@ -78,7 +78,7 @@ public class TasksController extends AbstractController {
 		map.put("users", getUsers());
 		map.put("task", getTask(key));
 		map.put("subtasks", getSubtask(key));
-		map.put("page", "/tasks/show.jsp");
+		map.put("page", "tasks/show.jsp");
 		return Response.ok(new Viewable("/users/router", map)).build();
 	}
 
@@ -96,7 +96,7 @@ public class TasksController extends AbstractController {
 		}else{
 			map.put("task", getTask(key));
 		}
-		map.put("page", "/tasks/edit.jsp");
+		map.put("page", "tasks/edit.jsp");
 		return Response.ok(new Viewable("/users/router", map)).build();
 	}
 
@@ -261,7 +261,7 @@ public class TasksController extends AbstractController {
 		map.put("activePage", 5);
 		map.put("posible", possibleUser());
 		map.put("title", "Task list");
-		map.put("page", "/tasks/calendar.jsp");
+		map.put("page", "tasks/calendar.jsp");
 		return Response.ok(new Viewable("/tasks/router", map)).build();
 	}
 	

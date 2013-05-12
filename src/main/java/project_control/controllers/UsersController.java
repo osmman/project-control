@@ -45,7 +45,7 @@ public class UsersController extends AbstractController {
 		map.put("users", getUsers());
 		map.put("activePage", 2);
 		map.put("title", "Users list");
-		map.put("page", "/users/index.jsp");
+		map.put("page", "users/index.jsp");
 		return Response.ok(new Viewable("/users/router", map)).build();
 	}
 
@@ -57,7 +57,7 @@ public class UsersController extends AbstractController {
 		map.put("activePage", 2);
 		map.put("title", "Users list - New");
 		map.put("user", user);
-		map.put("page", "/users/new.jsp");
+		map.put("page", "users/new.jsp");
 		return Response.ok(new Viewable("/users/router", map)).build();
 	}
 
@@ -109,7 +109,7 @@ public class UsersController extends AbstractController {
 			map.put("user", getUser(key));
 		}
 		map.put("title", "Users list - Edit");
-		map.put("page", "/users/edit.jsp");
+		map.put("page", "users/edit.jsp");
 		return Response.ok(new Viewable("/users/router", map)).build();
 	}
 

@@ -45,7 +45,7 @@ public class ListsController extends AbstractController {
 		map.put("email", email);
 		map.put("type", type);
 		map.put("title", "List of tasks");
-		map.put("page", "/lists/index.jsp");
+		map.put("page", "lists/index.jsp");
 		return Response.ok(new Viewable("/lists/router", map)).build();
 	}
 	
