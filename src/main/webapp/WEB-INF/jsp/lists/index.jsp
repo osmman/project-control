@@ -9,12 +9,12 @@
 <div class="prettyprint">
 	<form action="" method="get" class="form-inline">
 		<select name="email">
-			<c:forEach var="user" items="${it.users}">
-				<c:if test="${it.email == user.email}">
-					<option value="${user.email}" selected="selected">${user.name}</option>
+			<c:forEach var="usera" items="${it.users}">
+				<c:if test="${it.email == usera.email}">
+					<option value="${usera.email}" selected="selected">${usera.name}</option>
 				</c:if>
-				<c:if test="${it.email != user.email}">
-					<option value="${user.email}" >${user.name}</option>
+				<c:if test="${it.email != usera.email}">
+					<option value="${usera.email}" >${usera.name}</option>
 				</c:if>
 			</c:forEach>
 		</select>
