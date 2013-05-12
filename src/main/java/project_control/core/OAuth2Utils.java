@@ -14,14 +14,17 @@ import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
+import com.google.api.services.oauth2.Oauth2;
+import com.google.api.services.oauth2.Oauth2Scopes;
+import com.google.api.services.oauth2.model.Userinfo;
 import com.google.appengine.api.users.UserServiceFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-
 
 public class OAuth2Utils {
 
@@ -30,16 +33,25 @@ public class OAuth2Utils {
 
 	/** Global instance of the JSON factory. */
 	static final JsonFactory JSON_FACTORY = new JacksonFactory();
-	
+
 	static final String CLIENTSECRETS_LOCATION = "/client_secrets.json";
+
+	//static final String CLIENTSECRETS_LOCATION = "/client_secrets_production.json";
+	
+	private static final List<String> SCOPES = Arrays.asList(
+			DriveScopes.DRIVE_FILE,
+			Oauth2Scopes.USERINFO_EMAIL,
+			Oauth2Scopes.USERINFO_PROFILE,
+			CalendarScopes.CALENDAR);
 
 	private static GoogleClientSecrets clientSecrets = null;
 
 	public static GoogleClientSecrets getClientCredential() throws IOException {
 		if (clientSecrets == null) {
-			
-			clientSecrets = GoogleClientSecrets.load(
-					JSON_FACTORY, OAuth2Utils.class.getResourceAsStream(CLIENTSECRETS_LOCATION));
+
+			clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,
+					OAuth2Utils.class
+							.getResourceAsStream(CLIENTSECRETS_LOCATION));
 			Preconditions
 					.checkArgument(
 							!clientSecrets.getDetails().getClientId()
@@ -60,14 +72,8 @@ public class OAuth2Utils {
 	}
 
 	public static GoogleAuthorizationCodeFlow newFlow() throws IOException {
-		ArrayList<String> scope = new ArrayList<String>();
-		
-		scope.add(CalendarScopes.CALENDAR);
-		scope.add(DriveScopes.DRIVE_FILE);
-		
 		return new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT,
-				JSON_FACTORY, getClientCredential(),
-				scope)
+				JSON_FACTORY, getClientCredential(), SCOPES)
 				.setCredentialStore(new AppEngineCredentialStore())
 				.setAccessType("offline").build();
 	}
@@ -75,18 +81,30 @@ public class OAuth2Utils {
 	public static Calendar getCalendarService() throws IOException {
 		String userId = UserServiceFactory.getUserService().getCurrentUser()
 				.getUserId();
+		return getCalendarService(userId);
+	}
+
+	public static Calendar getCalendarService(String userId) throws IOException {
 		Credential credential = newFlow().loadCredential(userId);
 		return new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
 				.build();
 	}
-	
+
 	public static Drive getDriveService() throws IOException {
 		String userId = UserServiceFactory.getUserService().getCurrentUser()
 				.getUserId();
 		Credential credential = newFlow().loadCredential(userId);
-		  return new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).build();
-		}
+		return new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
+				.build();
+	}
 
+	public static Userinfo getUserInfo(String userId)
+			throws IOException {
+		Credential credential = newFlow().loadCredential(userId);
+		Oauth2 userInfoService = new Oauth2.Builder(HTTP_TRANSPORT,
+				JSON_FACTORY, credential).build();
+		return userInfoService.userinfo().get().execute();
+	}
 
 	private OAuth2Utils() {
 	}
