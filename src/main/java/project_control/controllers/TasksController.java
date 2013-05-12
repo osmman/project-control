@@ -6,12 +6,15 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -52,13 +55,14 @@ public class TasksController extends AbstractController {
 	@GET
 	@Path("new")
 	@Produces(MediaType.TEXT_HTML)
-	public Response new_item(@QueryParam("id") Long id) {
+	public Response new_item(@QueryParam("id") Long id, @QueryParam("task") Task t) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("activePage", 3);
 		map.put("title", "Task list - New");
 		map.put("parent", id);
 		map.put("posible", possibleUser());
 		map.put("users", getUsers());
+		map.put("task", t);
 		map.put("page", "/tasks/new.jsp");
 		return Response.ok(new Viewable("/users/router", map)).build();
 	}
@@ -81,13 +85,17 @@ public class TasksController extends AbstractController {
 	@GET
 	@Path("{key}/edit")
 	@Produces(MediaType.TEXT_HTML)
-	public Response edit(@PathParam("key") Long key) {
+	public Response edit(@PathParam("key") Long key, @QueryParam("task") Task task) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("activePage", 3);
 		map.put("title", "Task list - Edit");
 		map.put("posible", possibleUser());
 		map.put("users", getUsers());
-		map.put("task", getTask(key));
+		if(task != null){
+			map.put("task", task);
+		}else{
+			map.put("task", getTask(key));
+		}
 		map.put("page", "/tasks/edit.jsp");
 		return Response.ok(new Viewable("/users/router", map)).build();
 	}
@@ -103,8 +111,8 @@ public class TasksController extends AbstractController {
 		      @FormParam("parent") Long parent,
 		      @Context HttpServletResponse servletResponse) {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
-	    try {
-	        Task t = pm.getObjectById(Task.class, key);
+		Task t = pm.getObjectById(Task.class, key);
+		try {
 	        t.setTitle(title);
 	        DateFormat formatter = new SimpleDateFormat("MM.dd.yy");
 	        t.setStartAt(formatter.parse(startAt));
@@ -112,11 +120,17 @@ public class TasksController extends AbstractController {
 	        t.setAssigned(assigned);
 	        pm.makePersistent(t);
 		}catch(ConstraintViolationException e){
-			request.setAttribute("message", e);
-			return edit(key);
+			List<String> err = new LinkedList<String>();
+			Iterator<ConstraintViolation<?>> it = e.getConstraintViolations().iterator();
+			while(it.hasNext()){
+				ConstraintViolation<?> hlp = it.next();
+				err.add(hlp.getPropertyPath() +" - "+ hlp.getMessage());
+			}
+			errorMessage(err);
+			return edit(key, t);
 		} catch (ParseException e) {
 			request.setAttribute("message", e);
-			return edit(key);
+			return edit(key, t);
 		}
 	    finally {
 	        pm.close();
@@ -150,11 +164,17 @@ public class TasksController extends AbstractController {
 			task.setParentTask(parent);
 			pm.makePersistent(task);
 		}catch(ConstraintViolationException e){
-			errorMessage(e);
-			return new_item(parent);
+			List<String> err = new LinkedList<String>();
+			Iterator<ConstraintViolation<?>> it = e.getConstraintViolations().iterator();
+			while(it.hasNext()){
+				ConstraintViolation<?> hlp = it.next();
+				err.add(hlp.getPropertyPath() +" - "+ hlp.getMessage());
+			}
+			errorMessage(err);
+			return new_item(parent, task);
 		} catch (ParseException e) {
 			errorMessage(e);
-			return new_item(parent);
+			return new_item(parent, task);
 		}
 		finally {
 			pm.close();

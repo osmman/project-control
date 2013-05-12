@@ -5,7 +5,12 @@
 		<h1>User - new</h1>
 	</div>
 </div>
-${it.user}
+
+<p class="text-error">
+	<c:forEach var="err" items="${error}">
+		${err}<br />
+	</c:forEach>
+</p>
 <form action="update" method="post">
 	<input type="hidden" name="defEmail" value="${it.user.email}" />
 	<div class="control-group">

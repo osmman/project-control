@@ -1,5 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <div class="row-fluid">
 	<div class="span6">
 		<h1>Lists</h1>
@@ -60,9 +61,9 @@
 			<td>${task.created}</td>
 			<td>${task.assigned}</td>
 			<td>${task.fixed}</td>
-			<td>${task.createdAt}</td>
-			<td>${task.startAt}</td>
-			<td>${task.deadLineAt}</td>
+			<td><fmt:formatDate value="${task.createdAt}" pattern="MM.dd.yy" /></td>
+			<td><fmt:formatDate value="${task.startAt}" pattern="MM.dd.yy" /></td>
+			<td><fmt:formatDate value="${task.deadLineAt}" pattern="MM.dd.yy" /></td>
 			<td><c:if test="${task.parentTask != null}"><a href="/tasks/${task.parentTask}">#${task.parentTask}</a></c:if></td>
 			<td>
 				<form action="/tasks/delete" method="post"><button name="key" type="submit" value="${task.key}" class="btn btn-danger">Delete</button></form>

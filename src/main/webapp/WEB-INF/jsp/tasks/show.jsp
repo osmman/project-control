@@ -1,5 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <div class="row-fluid">
 	<div class="span6">
 		<h1>Tasks #${it.task.key}</h1>
@@ -40,18 +41,18 @@
 	
 	<tr>
 		<th>Created at:</th>
-		<td>${it.task.createdAt}</td>
+		<td><fmt:formatDate value="${it.task.createdAt}" pattern="MM.dd.yy" /></td>
 	</tr>
 	
 	<tr>
 		<th>Start at:</th>
-		<td>${it.task.startAt}</td>
+		<td><fmt:formatDate value="${it.task.startAt}" pattern="MM.dd.yy" /></td>
 	</tr>
 	
 	
 	<tr>
 		<th>Deadline:</th>
-		<td>${it.task.deadLineAt}</td>
+		<td><fmt:formatDate value="${it.task.deadLineAt}" pattern="MM.dd.yy" /></td>
 	</tr>
 	
 	<tr>

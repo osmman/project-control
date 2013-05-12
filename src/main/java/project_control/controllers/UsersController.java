@@ -2,6 +2,7 @@ package project_control.controllers;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.Map;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
@@ -49,10 +51,11 @@ public class UsersController extends AbstractController {
 	@GET
 	@Path("new")
 	@Produces(MediaType.TEXT_HTML)
-	public Response new_item() {
+	public Response new_item(@QueryParam("user") User user) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("activePage", 2);
 		map.put("title", "Users list - New");
+		map.put("user", user);
 		map.put("page", "/users/new.jsp");
 		return Response.ok(new Viewable("/users/router", map)).build();
 	}
@@ -73,8 +76,14 @@ public class UsersController extends AbstractController {
 			user.setCreatedAt(new Date());
 			pm.makePersistent(user);
 		}catch(ConstraintViolationException e){
-			errorMessage(e);
-			return new_item();
+			List<String> err = new LinkedList<String>();
+			Iterator<ConstraintViolation<?>> it = e.getConstraintViolations().iterator();
+			while(it.hasNext()){
+				ConstraintViolation<?> hlp = it.next();
+				err.add(hlp.getPropertyPath() +" - "+ hlp.getMessage());
+			}
+			errorMessage(err);
+			return new_item(user);
 		}
 		finally {
 			pm.close();
@@ -86,11 +95,15 @@ public class UsersController extends AbstractController {
 	@GET
 	@Path("edit")
 	@Produces(MediaType.TEXT_HTML)
-	public Response edit(@QueryParam("key") String key) {
+	public Response edit(@QueryParam("key") String key, @QueryParam("user") User user) {
 		Map<String, Object> map = new HashMap<String, Object>();
 
 		map.put("activePage", 2);
-		map.put("user", getUser(key));
+		if(user != null){
+			map.put("user", user);
+		}else{
+			map.put("user", getUser(key));
+		}
 		map.put("title", "Users list - Edit");
 		map.put("page", "/users/edit.jsp");
 		return Response.ok(new Viewable("/users/router", map)).build();
@@ -105,14 +118,20 @@ public class UsersController extends AbstractController {
 		      @FormParam("phone") String phone,
 		      @Context HttpServletResponse servletResponse) {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
-	    try {
-	        User u = pm.getObjectById(User.class, defEmail);
+		User u = pm.getObjectById(User.class, defEmail);
+		try {
 	        u.setName(name);
 	        u.setPhone(phone);
 	        pm.makePersistent(u);
 		}catch(ConstraintViolationException e){
-			request.setAttribute("message", e);
-			return edit(defEmail);
+			List<String> err = new LinkedList<String>();
+			Iterator<ConstraintViolation<?>> it = e.getConstraintViolations().iterator();
+			while(it.hasNext()){
+				ConstraintViolation<?> hlp = it.next();
+				err.add(hlp.getPropertyPath() +" - "+ hlp.getMessage());
+			}
+			errorMessage(err);
+			return edit(defEmail, u);
 		}
 	    finally {
 	        pm.close();

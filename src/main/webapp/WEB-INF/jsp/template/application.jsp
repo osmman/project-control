@@ -77,8 +77,6 @@
     </div>
 
     <div class="container">
-      ${info}
-	  ${error.constraintViolations}
       <jsp:include page="${param.body}" />
 
     </div> <!-- /container -->
