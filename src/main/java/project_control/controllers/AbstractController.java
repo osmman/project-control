@@ -20,7 +20,7 @@ abstract class AbstractController {
 	@Context
 	ServletContext context;
 	
-	Response onAuthorization(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+	Response onAuthorization(HttpServletRequest request, HttpServletResponse response){
 		try {
 			return Response.temporaryRedirect(new URI("/oauth2request")).build();
 		} catch (URISyntaxException e) {
