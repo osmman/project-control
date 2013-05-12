@@ -48,6 +48,17 @@ public class Task {
 
 	@Persistent
 	private String calendarEventId;
+	
+	@Persistent
+	private String text;
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
 
 	public String getTitle() {
 		return title;
