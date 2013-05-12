@@ -5,5 +5,4 @@
 		<h1>Tasks - calendar</h1>
 	</div>
 </div>
-<iframe src="https://www.google.com/calendar/embed?src=kc5102hnd3vkrbukccp90qrebk%40group.calendar.google.com&ctz=Europe/Prague" style="border: 0" width="800" height="600" frameborder="0" scrolling="no">
-</iframe>
+<iframe src="https://www.google.com/calendar/embed?src=m0uu29d1sjfb9ogefudrnflbhk%40group.calendar.google.com&ctz=Europe/Prague" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>

@@ -20,7 +20,7 @@ public class Calendar {
 
 	public static final String DEFAULT_NAME = "Project control";
 	
-	public static final String CALENDAR_ID = "kc5102hnd3vkrbukccp90qrebk@group.calendar.google.com";
+	public static final String CALENDAR_ID = "m0uu29d1sjfb9ogefudrnflbhk@group.calendar.google.com";
 	
 	private com.google.api.services.calendar.Calendar service;
 	
@@ -90,6 +90,20 @@ public class Calendar {
 	
 	public String updateEvent(Task task) throws IOException{
 		Event event = service.events().get(CALENDAR_ID, task.getCalendarEventId()).execute();
+		
+		event.setSummary(task.getTitle());
+		if(task.getStartAt() != null){
+			DateTime start = new DateTime(task.getStartAt(), TimeZone.getTimeZone("UTC"));
+			event.setStart(new EventDateTime().setDateTime(start));
+		}else if(task.getDeadLineAt() != null){
+			Date startDate = new Date();
+			DateTime start = new DateTime(startDate, TimeZone.getTimeZone("UTC"));
+			event.setStart(new EventDateTime().setDateTime(start));
+		}
+		if(task.getDeadLineAt() != null){
+			DateTime end = new DateTime(task.getDeadLineAt(), TimeZone.getTimeZone("UTC"));
+			event.setEnd(new EventDateTime().setDateTime(end));
+		}
 		
 		Event updatedEvent = service.events().update(CALENDAR_ID, event.getId(), event).execute();
 		
