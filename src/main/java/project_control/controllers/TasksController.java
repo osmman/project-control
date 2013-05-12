@@ -1,6 +1,6 @@
 package project_control.controllers;
 
-
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,6 +25,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import project_control.core.PMF;
+import project_control.models.Calendar;
 import project_control.models.Task;
 import project_control.models.User;
 
@@ -35,11 +36,10 @@ import com.sun.jersey.api.view.Viewable;
 @Path("tasks")
 public class TasksController extends AbstractController {
 
-	
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public Response index() {
-		//create();
+		// create();
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("tasks", getTasks());
 		map.put("activePage", 3);
@@ -48,7 +48,7 @@ public class TasksController extends AbstractController {
 		map.put("page", "/tasks/index.jsp");
 		return Response.ok(new Viewable("/tasks/router", map)).build();
 	}
-	
+
 	@GET
 	@Path("new")
 	@Produces(MediaType.TEXT_HTML)
@@ -62,7 +62,7 @@ public class TasksController extends AbstractController {
 		map.put("page", "/tasks/new.jsp");
 		return Response.ok(new Viewable("/users/router", map)).build();
 	}
-	
+
 	@GET
 	@Path("{key}")
 	@Produces(MediaType.TEXT_HTML)
@@ -77,7 +77,7 @@ public class TasksController extends AbstractController {
 		map.put("page", "/tasks/show.jsp");
 		return Response.ok(new Viewable("/users/router", map)).build();
 	}
-	
+
 	@GET
 	@Path("{key}/edit")
 	@Produces(MediaType.TEXT_HTML)
@@ -91,112 +91,128 @@ public class TasksController extends AbstractController {
 		map.put("page", "/tasks/edit.jsp");
 		return Response.ok(new Viewable("/users/router", map)).build();
 	}
-	
+
 	@POST
 	@Path("update")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response update(@FormParam("key") Long key,
-			  @FormParam("title") String title,
-		      @FormParam("startAt") String startAt,
-		      @FormParam("deadLineAt") String deadLineAt,
-		      @FormParam("assigned") String assigned,
-		      @FormParam("parent") Long parent,
-		      @Context HttpServletResponse servletResponse) {
-		PersistenceManager pm = PMF.get().getPersistenceManager();
-	    try {
-	        Task t = pm.getObjectById(Task.class, key);
-	        t.setTitle(title);
-	        DateFormat formatter = new SimpleDateFormat("MM.dd.yy");
-	        t.setStartAt(formatter.parse(startAt));
-	        t.setDeadLineAt(formatter.parse(deadLineAt));
-	        t.setAssigned(assigned);
-	        pm.makePersistent(t);
-		}catch(ConstraintViolationException e){
-			request.setAttribute("message", e);
-			return edit(key);
-		} catch (ParseException e) {
-			request.setAttribute("message", e);
-			return edit(key);
+			@FormParam("title") String title,
+			@FormParam("startAt") String startAt,
+			@FormParam("deadLineAt") String deadLineAt,
+			@FormParam("assigned") String assigned,
+			@FormParam("parent") Long parent,
+			@Context HttpServletResponse servletResponse) {
+		try {
+			Calendar calendar = new Calendar();
+			PersistenceManager pm = PMF.get().getPersistenceManager();
+			try {
+				Task t = pm.getObjectById(Task.class, key);
+				t.setTitle(title);
+				DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+				t.setStartAt(formatter.parse(startAt));
+				t.setDeadLineAt(formatter.parse(deadLineAt));
+				t.setAssigned(assigned);
+				pm.makePersistent(t);
+				calendar.updateEvent(t);
+			} catch (ConstraintViolationException e) {
+				request.setAttribute("message", e);
+				return edit(key);
+			} catch (ParseException e) {
+				request.setAttribute("message", e);
+				return edit(key);
+			} finally {
+				pm.close();
+			}
+		} catch (IOException e) {
+			return onAuthorization(request, response);
 		}
-	    finally {
-	        pm.close();
-	    }
-		
+
 		return show(key);
 	}
-	
-	
+
 	@POST
 	@Path("create")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response create(@FormParam("title") String title,
-		      @FormParam("startAt") String startAt,
-		      @FormParam("deadLineAt") String deadLineAt,
-		      @FormParam("assigned") String assigned,
-		      @FormParam("parent") Long parent,
-		      @Context HttpServletResponse servletResponse) {
-		PersistenceManager pm = PMF.get().getPersistenceManager();
-		Task task = new Task();
+			@FormParam("startAt") String startAt,
+			@FormParam("deadLineAt") String deadLineAt,
+			@FormParam("assigned") String assigned,
+			@FormParam("parent") Long parent,
+			@Context HttpServletResponse servletResponse) {
 		try {
-			task.setTitle(title);
-			DateFormat formatter = new SimpleDateFormat("MM.dd.yy");
-			task.setCreatedAt(new Date());
-			task.setStartAt(formatter.parse(startAt));
-			task.setDeadLineAt(formatter.parse(deadLineAt));
-			UserService userService = UserServiceFactory.getUserService();
-			com.google.appengine.api.users.User user = userService.getCurrentUser();
-			task.setCreated(user.getEmail());
-			task.setAssigned(assigned);
-			task.setParentTask(parent);
-			pm.makePersistent(task);
-		}catch(ConstraintViolationException e){
-			errorMessage(e);
-			return new_item(parent);
-		} catch (ParseException e) {
-			errorMessage(e);
-			return new_item(parent);
+			Calendar calendar = new Calendar();
+			PersistenceManager pm = PMF.get().getPersistenceManager();
+			Task task = new Task();
+			try {
+				task.setTitle(title);
+				DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+				task.setCreatedAt(new Date());
+				task.setStartAt(formatter.parse(startAt));
+				task.setDeadLineAt(formatter.parse(deadLineAt));
+				UserService userService = UserServiceFactory.getUserService();
+				com.google.appengine.api.users.User user = userService
+						.getCurrentUser();
+				task.setCreated(user.getEmail());
+				task.setAssigned(assigned);
+				task.setParentTask(parent);
+				pm.makePersistent(task);
+				task.setCalendarEventId(calendar.addEvent(task));
+				pm.makePersistent(task);
+			} catch (ConstraintViolationException e) {
+				errorMessage(e);
+				return new_item(parent);
+			} catch (ParseException e) {
+				errorMessage(e);
+				return new_item(parent);
+			} finally {
+				pm.close();
+			}
+		} catch (IOException e) {
+			return onAuthorization(request, response);
 		}
-		finally {
-			pm.close();
-		}
-
 		return index();
 	}
-	
+
 	@POST
 	@Path("delete")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response delete(@FormParam("key") Long key) {
-		PersistenceManager pm = PMF.get().getPersistenceManager();
-	    try {
-	        Task t = pm.getObjectById(Task.class, key);
-	        pm.deletePersistent(t);
-	    } finally {
-	        pm.close();
-	    }
-		
+		try {
+			Calendar calendar = new Calendar();
+			PersistenceManager pm = PMF.get().getPersistenceManager();
+			try {
+				Task t = pm.getObjectById(Task.class, key);
+				String event = t.getCalendarEventId();
+				pm.deletePersistent(t);
+				calendar.removeEvent(event);
+			} finally {
+				pm.close();
+			}
+		} catch (IOException e) {
+			return onAuthorization(request, response);
+		}
 		return index();
 	}
-	
+
 	@POST
 	@Path("fix")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response fix(@FormParam("key") Long key) {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
-	    try {
-	        Task t = pm.getObjectById(Task.class, key);
-	        UserService userService = UserServiceFactory.getUserService();
-			com.google.appengine.api.users.User user = userService.getCurrentUser();
-	        t.setFixed(user.getEmail());
-	        pm.makePersistent(t);
-		}catch(ConstraintViolationException e){
+		try {
+			Task t = pm.getObjectById(Task.class, key);
+			UserService userService = UserServiceFactory.getUserService();
+			com.google.appengine.api.users.User user = userService
+					.getCurrentUser();
+			t.setFixed(user.getEmail());
+			pm.makePersistent(t);
+		} catch (ConstraintViolationException e) {
 			request.setAttribute("message", e);
 			return show(key);
+		} finally {
+			pm.close();
 		}
-	    finally {
-	        pm.close();
-	    }
-		
+
 		return show(key);
 	}
 
@@ -214,24 +230,25 @@ public class TasksController extends AbstractController {
 			pm.close();
 		}
 	}
-	
-	public boolean possibleUser(){
+
+	public boolean possibleUser() {
 		UserService userService = UserServiceFactory.getUserService();
 		com.google.appengine.api.users.User user = userService.getCurrentUser();
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		Query q = pm.newQuery(User.class);
-		q.setFilter("email == '"+user.getEmail()+"'");
+		q.setFilter("email == '" + user.getEmail() + "'");
 		try {
 			List<User> results = (List<User>) q.execute();
-			if(results.size() > 0) return true;
+			if (results.size() > 0)
+				return true;
 			return false;
-			
+
 		} finally {
 			q.closeAll();
 			pm.close();
 		}
 	}
-	
+
 	public List<User> getUsers() {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		Query q = pm.newQuery(User.class);
@@ -244,18 +261,18 @@ public class TasksController extends AbstractController {
 			pm.close();
 		}
 	}
-	
+
 	public Task getTask(Long key) {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
-	    Task t = pm.getObjectById(Task.class, key);
-	    return t;
+		Task t = pm.getObjectById(Task.class, key);
+		return t;
 	}
-	
+
 	public List<Task> getSubtask(Long key) {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		Query q = pm.newQuery(Task.class);
 		try {
-			q.setFilter("parentTask == "+key.toString()+"");
+			q.setFilter("parentTask == " + key.toString() + "");
 			List<Task> results = (List<Task>) q.execute();
 			System.out.println(results);
 			return results;

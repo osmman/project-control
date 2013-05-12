@@ -72,27 +72,32 @@ public class Calendar {
 		Event event = new Event();
 		event.setSummary(task.getTitle());
 		
-		Date startDate = new Date();
-		Date endDate = new Date(startDate.getTime() + 3600000);
-		DateTime start = new DateTime(startDate, TimeZone.getTimeZone("UTC"));
-		event.setStart(new EventDateTime().setDateTime(start));
-		DateTime end = new DateTime(endDate, TimeZone.getTimeZone("UTC"));
-		event.setEnd(new EventDateTime().setDateTime(end));
-		
+		if(task.getStartAt() != null){
+			DateTime start = new DateTime(task.getStartAt(), TimeZone.getTimeZone("UTC"));
+			event.setStart(new EventDateTime().setDateTime(start));
+		}else if(task.getDeadLineAt() != null){
+			Date startDate = new Date();
+			DateTime start = new DateTime(startDate, TimeZone.getTimeZone("UTC"));
+			event.setStart(new EventDateTime().setDateTime(start));
+		}
+		if(task.getDeadLineAt() != null){
+			DateTime end = new DateTime(task.getDeadLineAt(), TimeZone.getTimeZone("UTC"));
+			event.setEnd(new EventDateTime().setDateTime(end));
+		}
 		Event createdEvent = service.events().insert(CALENDAR_ID, event).execute();
 		return createdEvent.getId();
 	}
 	
 	public String updateEvent(Task task) throws IOException{
-		Event event = service.events().get(CALENDAR_ID, "eventId").execute();
+		Event event = service.events().get(CALENDAR_ID, task.getCalendarEventId()).execute();
 		
 		Event updatedEvent = service.events().update(CALENDAR_ID, event.getId(), event).execute();
 		
 		return updatedEvent.getId();
 	}
 	
-	public void removeEvent(Task task) throws IOException{
-		service.events().delete(CALENDAR_ID, "eventId").execute();
+	public void removeEvent(String id) throws IOException{
+		service.events().delete(CALENDAR_ID, id).execute();
 	}
 
 }
