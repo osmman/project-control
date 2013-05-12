@@ -32,6 +32,8 @@ import project_control.core.PMF;
 import project_control.models.Task;
 import project_control.models.User;
 
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.sun.jersey.api.view.Viewable;
 
 @Path("tasks")
@@ -45,6 +47,7 @@ public class TasksController extends AbstractController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("tasks", getTasks());
 		map.put("activePage", 3);
+		map.put("posible", possibleUser());
 		map.put("title", "Task list");
 		map.put("page", "/tasks/index.jsp");
 		return Response.ok(new Viewable("/tasks/router", map)).build();
@@ -57,6 +60,8 @@ public class TasksController extends AbstractController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("activePage", 3);
 		map.put("title", "Task list - New");
+		map.put("posible", possibleUser());
+		map.put("users", getUsers());
 		map.put("page", "/tasks/new.jsp");
 		return Response.ok(new Viewable("/users/router", map)).build();
 	}
@@ -74,6 +79,7 @@ public class TasksController extends AbstractController {
 	public Response create(@FormParam("title") String title,
 		      @FormParam("startAt") String startAt,
 		      @FormParam("deadLineAt") String deadLineAt,
+		      @FormParam("assigned") String assigned,
 		      @Context HttpServletResponse servletResponse) {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		Task task = new Task();
@@ -83,7 +89,10 @@ public class TasksController extends AbstractController {
 			task.setCreatedAt(new Date());
 			task.setStartAt(formatter.parse(startAt));
 			task.setDeadLineAt(formatter.parse(deadLineAt));
-			task.setCreated("elianoss@gmail.com");
+			UserService userService = UserServiceFactory.getUserService();
+			com.google.appengine.api.users.User user = userService.getCurrentUser();
+			task.setCreated(user.getEmail());
+			task.setAssigned(assigned);
 			pm.makePersistent(task);
 		}catch(ConstraintViolationException e){
 			errorMessage(e);
@@ -119,6 +128,36 @@ public class TasksController extends AbstractController {
 		Query q = pm.newQuery(Task.class);
 		try {
 			List<Task> results = (List<Task>) q.execute();
+			System.err.println(results);
+			return results;
+		} finally {
+			q.closeAll();
+			pm.close();
+		}
+	}
+	
+	public boolean possibleUser(){
+		UserService userService = UserServiceFactory.getUserService();
+		com.google.appengine.api.users.User user = userService.getCurrentUser();
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		Query q = pm.newQuery(User.class);
+		q.setFilter("email == '"+user.getEmail()+"'");
+		try {
+			List<User> results = (List<User>) q.execute();
+			if(results.size() > 0) return true;
+			return false;
+			
+		} finally {
+			q.closeAll();
+			pm.close();
+		}
+	}
+	
+	public List<User> getUsers() {
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		Query q = pm.newQuery(User.class);
+		try {
+			List<User> results = (List<User>) q.execute();
 			System.err.println(results);
 			return results;
 		} finally {

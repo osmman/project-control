@@ -4,9 +4,11 @@
 	<div class="span6">
 		<h1>Tasks</h1>
 	</div>
-	<div class="span6 text-right">
-		<a class="btn btn-primary" href="/tasks/new">New</a>
-	</div>
+	<c:if test="${it.posible == true}">
+		<div class="span6 text-right">
+			<a class="btn btn-primary" href="/tasks/new">New</a>
+		</div>
+	</c:if>
 </div>
 <table class="table table-bordered">
 	<tr>
@@ -31,7 +33,7 @@
 			<td>${task.createdAt}</td>
 			<td>${task.startAt}</td>
 			<td>${task.deadLineAt}</td>
-			<td>${task.parentTask}</td>
+			<td><c:if test="${task.parentTask}">${task.parentTask.key}</c:if></td>
 			<td>
 				<ul class="inline">
 					<li>
