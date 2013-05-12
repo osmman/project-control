@@ -26,7 +26,7 @@
 						<form action="/users/edit" method="get"><button name="key" type="submit" value="${user.email}" class="btn btn-primary">Edit</button></form>
 					</li>
 					<li>
-						<form action="/users/delete" method="post"><button name="key" type="submit" value="${user.email}" class="btn btn-danger">Edit</button></form>
+						<form action="/users/delete" method="post"><button name="key" type="submit" value="${user.email}" class="btn btn-danger">Delete</button></form>
 					</li>
 				</ul>
 			</td>

@@ -39,15 +39,6 @@ public class User {
 	@Persistent
 	@NotNull
 	private Date createdAt;
-	
-//	@Persistent(mappedBy = "assigner")
-//	private List<Task> assignedTasks;
-	
-	@Persistent(mappedBy = "creater")
-	private List<Task> createdTasks;
-	
-//	@Persistent(mappedBy = "finisher")
-//	private List<Task> finishedTasks;
 
 
 	public Date getCreatedAt() {
@@ -86,16 +77,5 @@ public class User {
 		this.phone = phone;
 	}
 
-//	public List<Task> getAssignedTasks() {
-//		return assignedTasks;
-//	}
-
-	public List<Task> getCreatedTasks() {
-		return createdTasks;
-	}
-
-//	public List<Task> getFinishedTasks() {
-//		return finishedTasks;
-//	}
 	
 }

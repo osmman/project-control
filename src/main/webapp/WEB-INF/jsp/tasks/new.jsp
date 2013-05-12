@@ -1,20 +1,34 @@
-
-<?xml version="1.0" encoding="UTF-8"?>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="ISO-8859-1"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-<title>Insert title here</title>
-</head>
-<body>
-	<p>
-		items in your cart :<br />
-		<c:forEach var="task" items="${it.tasks}">
-        ${task}<br />
-		</c:forEach>
-	</p>
-</body>
-</html>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<div class="row-fluid">
+	<div class="span6">
+		<h1>Task - new</h1>
+	</div>
+</div>
+<form action="create" method="post"  >
+	<div class="control-group">
+		<label class="control-label" for="inputTitle">Title</label>
+	    <div class="controls">
+	    	<input type="text" id="inputTitle" name="title" placeholder="Title" value="${title}">
+	    </div>
+  	</div>
+  	
+  	<div class="control-group">
+		<label class="control-label" for="inputStartAt">Start at:</label>
+	    <div class="controls">
+	    	<input type="text" id="inputStartAt" name="startAt" placeholder="Start At" value="${startAt}">
+	    </div>
+	</div>
+	
+	<div class="control-group">
+		<label class="control-label" for="inputDeadLineAt">DeadLine at:</label>
+	    <div class="controls">
+	    	<input type="text" id="inputDeadLineAt"  name="deadLineAt" placeholder="DeadLine At" value="${deadLineAt}">
+	    </div>
+	</div>
+	
+	<div class="control-group">
+		<div class="controls">
+	    	<button type="submit" class="btn btn-primary">Create</button>
+	    </div>
+	</div>
+</form>

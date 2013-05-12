@@ -48,6 +48,13 @@
             	<c:if test="${param.activePage != 2}">
             		<li><a href="/users">Users</a></li> 
             	</c:if>
+            	
+            	<c:if test="${param.activePage == 3}">
+            		<li class="active"><a href="/tasks">Tasks</a></li> 
+            	</c:if>
+            	<c:if test="${param.activePage != 3}">
+            		<li><a href="/tasks">Tasks</a></li> 
+            	</c:if>
             </ul>
           </div><!--/.nav-collapse -->
         </div>
