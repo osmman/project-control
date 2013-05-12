@@ -13,6 +13,8 @@ import javax.ws.rs.core.Response;
 import project_control.core.OAuth2Utils;
 
 import com.google.api.services.calendar.model.CalendarList;
+import com.google.api.services.oauth2.model.Userinfo;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.sun.jersey.api.view.Viewable;
 
 @Path("/")
@@ -30,24 +32,22 @@ public class MainController extends AbstractController {
 			com.google.api.services.calendar.Calendar calendar = OAuth2Utils.getCalendarService();
 
 			com.google.api.services.calendar.Calendar.CalendarList.List request = calendar.calendarList().list();
-			request.setFields("items(id,summary)");
+			request.setFields("items(id,summary,accessRole)");
 			CalendarList feed = request.execute();
 			
 			
-//			project_control.models.User user = new project_control.models.User();
-//			user.setEmail(UserServiceFactory.getUserService().getCurrentUser().getUserId());
 //			
 //			project_control.models.Calendar cal = new project_control.models.Calendar();
 //			cal.setUser(user);
 			
-			//project_control.models.Calendar.createCalentar();
+			project_control.models.Calendar.createCalentar();
 			
-//			String userId = UserServiceFactory.getUserService().getCurrentUser().getUserId();
+			String userId = UserServiceFactory.getUserService().getCurrentUser().getUserId();
 //			
-//			Userinfo userinfo = OAuth2Utils.getUserInfo(userId);
+			Userinfo userinfo = OAuth2Utils.getUserInfo(userId);
 //			
 			map.put("calendars",feed);
-//			map.put("files",userinfo);
+			map.put("files",userinfo);
 		} catch (IOException e) {
 			return onAuthorization(request, response);
 		}
