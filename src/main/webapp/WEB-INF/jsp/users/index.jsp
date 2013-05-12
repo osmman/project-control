@@ -15,18 +15,18 @@
 		<th>Phone</th>
 		<th>Actions</th>
 	</tr>
-	<c:forEach var="user" items="${it.users}">
+	<c:forEach var="usera" items="${it.users}">
 		<tr>
-			<td>${user.email}</td>
-			<td>${user.name}</td>
-			<td>${user.phone}</td>
+			<td>${usera.name}</td>
+			<td>${usera.email}</td>
+			<td>${usera.phone}</td>
 			<td>
 				<ul class="inline">
 					<li>
-						<form action="/users/edit" method="get"><button name="key" type="submit" value="${user.email}" class="btn btn-primary">Edit</button></form>
+						<form action="/users/edit" method="get"><button name="key" type="submit" value="${usera.email}" class="btn btn-primary">Edit</button></form>
 					</li>
 					<li>
-						<form action="/users/delete" method="post"><button name="key" type="submit" value="${user.email}" class="btn btn-danger">Delete</button></form>
+						<form action="/users/delete" method="post"><button name="key" type="submit" value="${usera.email}" class="btn btn-danger">Delete</button></form>
 					</li>
 				</ul>
 			</td>
