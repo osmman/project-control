@@ -6,6 +6,7 @@
 	</div>
 </div>
 <form action="create" method="post"  >
+	<input type="hidden" value="${it.parent}" name="parent" />
 	<div class="control-group">
 		<label class="control-label" for="inputTitle">Title</label>
 	    <div class="controls">

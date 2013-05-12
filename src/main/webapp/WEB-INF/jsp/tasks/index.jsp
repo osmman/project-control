@@ -25,7 +25,7 @@
 	</tr>
 	<c:forEach var="task" items="${it.tasks}">
 		<tr>
-			<td>${task.key}</td>
+			<td><a href="/tasks/${task.key}">${task.key}</a></td>
 			<td>${task.title}</td>
 			<td>${task.created}</td>
 			<td>${task.assigned}</td>
@@ -33,16 +33,9 @@
 			<td>${task.createdAt}</td>
 			<td>${task.startAt}</td>
 			<td>${task.deadLineAt}</td>
-			<td><c:if test="${task.parentTask}">${task.parentTask.key}</c:if></td>
+			<td><c:if test="${task.parentTask != null}"><a href="/tasks/${task.parentTask}">#${task.parentTask}</a></c:if></td>
 			<td>
-				<ul class="inline">
-					<li>
-						<form action="/tasks/edit" method="get"><button name="key" type="submit" value="${task.key}" class="btn btn-primary">Edit</button></form>
-					</li>
-					<li>
-						<form action="/tasks/delete" method="post"><button name="key" type="submit" value="${task.key}" class="btn btn-danger">Delete</button></form>
-					</li>
-				</ul>
+				<form action="/tasks/delete" method="post"><button name="key" type="submit" value="${task.key}" class="btn btn-danger">Delete</button></form>
 			</td>
 		</tr>
 	</c:forEach>

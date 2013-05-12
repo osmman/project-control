@@ -1,12 +1,11 @@
 package project_control.controllers;
 
-import java.sql.Time;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -14,20 +13,17 @@ import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.PathParam;
 
-import project_control.core.OAuth2Callback;
-import project_control.core.OAuth2Servlet;
-import project_control.core.OAuth2Utils;
 import project_control.core.PMF;
 import project_control.models.Task;
 import project_control.models.User;
@@ -56,10 +52,11 @@ public class TasksController extends AbstractController {
 	@GET
 	@Path("new")
 	@Produces(MediaType.TEXT_HTML)
-	public Response new_item() {
+	public Response new_item(@QueryParam("id") Long id) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("activePage", 3);
 		map.put("title", "Task list - New");
+		map.put("parent", id);
 		map.put("posible", possibleUser());
 		map.put("users", getUsers());
 		map.put("page", "/tasks/new.jsp");
@@ -67,11 +64,67 @@ public class TasksController extends AbstractController {
 	}
 	
 	@GET
-	@Path("{task}")
+	@Path("{key}")
 	@Produces(MediaType.TEXT_HTML)
-	public Response show(@PathParam("task") String taskId) {
-		return Response.ok(new Viewable("/tasks/show")).build();
+	public Response show(@PathParam("key") Long key) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("activePage", 3);
+		map.put("title", "Task list - show");
+		map.put("posible", possibleUser());
+		map.put("users", getUsers());
+		map.put("task", getTask(key));
+		map.put("subtasks", getSubtask(key));
+		map.put("page", "/tasks/show.jsp");
+		return Response.ok(new Viewable("/users/router", map)).build();
 	}
+	
+	@GET
+	@Path("{key}/edit")
+	@Produces(MediaType.TEXT_HTML)
+	public Response edit(@PathParam("key") Long key) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("activePage", 3);
+		map.put("title", "Task list - Edit");
+		map.put("posible", possibleUser());
+		map.put("users", getUsers());
+		map.put("task", getTask(key));
+		map.put("page", "/tasks/edit.jsp");
+		return Response.ok(new Viewable("/users/router", map)).build();
+	}
+	
+	@POST
+	@Path("update")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response update(@FormParam("key") Long key,
+			  @FormParam("title") String title,
+		      @FormParam("startAt") String startAt,
+		      @FormParam("deadLineAt") String deadLineAt,
+		      @FormParam("assigned") String assigned,
+		      @FormParam("parent") Long parent,
+		      @Context HttpServletResponse servletResponse) {
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+	    try {
+	        Task t = pm.getObjectById(Task.class, key);
+	        t.setTitle(title);
+	        DateFormat formatter = new SimpleDateFormat("MM.dd.yy");
+	        t.setStartAt(formatter.parse(startAt));
+	        t.setDeadLineAt(formatter.parse(deadLineAt));
+	        t.setAssigned(assigned);
+	        pm.makePersistent(t);
+		}catch(ConstraintViolationException e){
+			request.setAttribute("message", e);
+			return edit(key);
+		} catch (ParseException e) {
+			request.setAttribute("message", e);
+			return edit(key);
+		}
+	    finally {
+	        pm.close();
+	    }
+		
+		return show(key);
+	}
+	
 	
 	@POST
 	@Path("create")
@@ -80,6 +133,7 @@ public class TasksController extends AbstractController {
 		      @FormParam("startAt") String startAt,
 		      @FormParam("deadLineAt") String deadLineAt,
 		      @FormParam("assigned") String assigned,
+		      @FormParam("parent") Long parent,
 		      @Context HttpServletResponse servletResponse) {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		Task task = new Task();
@@ -93,13 +147,14 @@ public class TasksController extends AbstractController {
 			com.google.appengine.api.users.User user = userService.getCurrentUser();
 			task.setCreated(user.getEmail());
 			task.setAssigned(assigned);
+			task.setParentTask(parent);
 			pm.makePersistent(task);
 		}catch(ConstraintViolationException e){
 			errorMessage(e);
-			return new_item();
+			return new_item(parent);
 		} catch (ParseException e) {
 			errorMessage(e);
-			return new_item();
+			return new_item(parent);
 		}
 		finally {
 			pm.close();
@@ -108,18 +163,42 @@ public class TasksController extends AbstractController {
 		return index();
 	}
 	
-//	@POST
-//	@Path("{task}")
-//	@Produces(MediaType.TEXT_HTML)
-//	public Response update(){
-//		return Response.ok(new Viewable("/tasks/index")).build();
-//	}
-//	
-//	@DELETE
-//	@Path("{task}")
-//	public Response delete(){
-//		return Response.ok(new Viewable("/tasks/index")).build();
-//	}
+	@POST
+	@Path("delete")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response delete(@FormParam("key") Long key) {
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+	    try {
+	        Task t = pm.getObjectById(Task.class, key);
+	        pm.deletePersistent(t);
+	    } finally {
+	        pm.close();
+	    }
+		
+		return index();
+	}
+	
+	@POST
+	@Path("fix")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Response fix(@FormParam("key") Long key) {
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+	    try {
+	        Task t = pm.getObjectById(Task.class, key);
+	        UserService userService = UserServiceFactory.getUserService();
+			com.google.appengine.api.users.User user = userService.getCurrentUser();
+	        t.setFixed(user.getEmail());
+	        pm.makePersistent(t);
+		}catch(ConstraintViolationException e){
+			request.setAttribute("message", e);
+			return show(key);
+		}
+	    finally {
+	        pm.close();
+	    }
+		
+		return show(key);
+	}
 
 	@GET
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -159,6 +238,26 @@ public class TasksController extends AbstractController {
 		try {
 			List<User> results = (List<User>) q.execute();
 			System.err.println(results);
+			return results;
+		} finally {
+			q.closeAll();
+			pm.close();
+		}
+	}
+	
+	public Task getTask(Long key) {
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+	    Task t = pm.getObjectById(Task.class, key);
+	    return t;
+	}
+	
+	public List<Task> getSubtask(Long key) {
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		Query q = pm.newQuery(Task.class);
+		try {
+			q.setFilter("parentTask == "+key.toString()+"");
+			List<Task> results = (List<Task>) q.execute();
+			System.out.println(results);
 			return results;
 		} finally {
 			q.closeAll();
