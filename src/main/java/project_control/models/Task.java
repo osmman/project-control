@@ -15,39 +15,39 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @PersistenceCapable
 public class Task {
-	
+
 	@PrimaryKey
-    @Persistent(valueStrategy = IdGeneratorStrategy.SEQUENCE)
-    private Long key;
-	
+	@Persistent(valueStrategy = IdGeneratorStrategy.SEQUENCE)
+	private Long key;
+
 	@Persistent
 	@Size(min = 3, max = 80)
 	private String title;
-	
+
 	@Persistent
 	@NotNull
 	private Date createdAt;
-	
+
 	@Persistent
 	private Date startAt;
-	
+
 	@Persistent
 	private Date deadLineAt;
-	
-	
+
 	@Persistent
 	private Long parentTask;
-	
-	
+
 	@Persistent
 	private String created;
-	
+
 	@Persistent
 	private String assigned;
-	
+
 	@Persistent
 	private String fixed;
 
+	@Persistent
+	private String calendarEventId;
 
 	public String getTitle() {
 		return title;
@@ -64,7 +64,6 @@ public class Task {
 	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
 	}
-
 
 	public Long getKey() {
 		return key;
@@ -116,6 +115,14 @@ public class Task {
 
 	public void setParentTask(Long parentTask) {
 		this.parentTask = parentTask;
+	}
+
+	public String getCalendarEventId() {
+		return calendarEventId;
+	}
+
+	public void setCalendarEventId(String calendarEventId) {
+		this.calendarEventId = calendarEventId;
 	}
 
 	

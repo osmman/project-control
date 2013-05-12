@@ -1,5 +1,6 @@
 package project_control.controllers;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -8,6 +9,7 @@ import java.util.Map;
 
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.DELETE;
@@ -33,19 +35,18 @@ import com.sun.jersey.api.view.Viewable;
 @Path("users")
 public class UsersController extends AbstractController {
 
-	
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public Response index() {
 		Map<String, Object> map = new HashMap<String, Object>();
-		
+
 		map.put("users", getUsers());
 		map.put("activePage", 2);
 		map.put("title", "Users list");
 		map.put("page", "/users/index.jsp");
 		return Response.ok(new Viewable("/users/router", map)).build();
 	}
-	
+
 	@GET
 	@Path("new")
 	@Produces(MediaType.TEXT_HTML)
@@ -56,33 +57,37 @@ public class UsersController extends AbstractController {
 		map.put("page", "/users/new.jsp");
 		return Response.ok(new Viewable("/users/router", map)).build();
 	}
-	
+
 	@POST
 	@Path("create")
 	@Produces(MediaType.TEXT_HTML)
 	public Response create(@FormParam("name") String name,
-		      @FormParam("email") String email,
-		      @FormParam("phone") String phone,
-		      @Context HttpServletResponse servletResponse) {
-		PersistenceManager pm = PMF.get().getPersistenceManager();
-		User user = new User();
+			@FormParam("email") String email, @FormParam("phone") String phone,
+			@Context HttpServletResponse servletResponse) {
 		try {
-			user.setName(name);
-			user.setEmail(email);
-			user.setPhone(phone);
-			user.setCreatedAt(new Date());
-			pm.makePersistent(user);
-		}catch(ConstraintViolationException e){
-			errorMessage(e);
-			return new_item();
+			Calendar calendar = new Calendar();
+			PersistenceManager pm = PMF.get().getPersistenceManager();
+			User user = new User();
+			try {
+				user.setName(name);
+				user.setEmail(email);
+				user.setPhone(phone);
+				user.setCreatedAt(new Date());
+				pm.makePersistent(user);
+				calendar.addUser(user);
+			} catch (ConstraintViolationException e) {
+				errorMessage(e);
+				return new_item();
+			} finally {
+				pm.close();
+			}
+		} catch (IOException e) {
+			return onAuthorization(request, response);
 		}
-		finally {
-			pm.close();
-		}
-		
+
 		return index();
 	}
-	
+
 	@GET
 	@Path("edit")
 	@Produces(MediaType.TEXT_HTML)
@@ -95,67 +100,60 @@ public class UsersController extends AbstractController {
 		map.put("page", "/users/edit.jsp");
 		return Response.ok(new Viewable("/users/router", map)).build();
 	}
-	
+
 	@POST
 	@Path("update")
 	@Produces(MediaType.TEXT_HTML)
 	public Response update(@FormParam("defEmail") String defEmail,
-			  @FormParam("name") String name,
-		      @FormParam("email") String email,
-		      @FormParam("phone") String phone,
-		      @Context HttpServletResponse servletResponse) {
+			@FormParam("name") String name, @FormParam("email") String email,
+			@FormParam("phone") String phone,
+			@Context HttpServletResponse servletResponse) {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
-	    try {
-	        User u = pm.getObjectById(User.class, defEmail);
-	        u.setName(name);
-	        u.setPhone(phone);
-	        pm.makePersistent(u);
-		}catch(ConstraintViolationException e){
+		try {
+			User u = pm.getObjectById(User.class, defEmail);
+			u.setName(name);
+			u.setPhone(phone);
+			pm.makePersistent(u);
+		} catch (ConstraintViolationException e) {
 			request.setAttribute("message", e);
 			return edit(defEmail);
+		} finally {
+			pm.close();
 		}
-	    finally {
-	        pm.close();
-	    }
-		
+
 		return index();
 	}
 
-	@GET
-	@Path("{task}")
-	@Produces(MediaType.TEXT_HTML)
-	public Response show(@PathParam("task") String taskId) {
-		return Response.ok(new Viewable("/tasks/show")).build();
-	}
-	
 	@POST
 	@Path("delete")
 	@Produces(MediaType.TEXT_HTML)
 	public Response delete(@FormParam("key") String key) {
-		PersistenceManager pm = PMF.get().getPersistenceManager();
-	    try {
-	        User u = pm.getObjectById(User.class, key);
-	        pm.deletePersistent(u);
-	    } finally {
-	        pm.close();
-	    }
-		
+		deleteUser(key);
 		return index();
 	}
+
 	
-	
-//	@POST
-//	@Path("{task}")
-//	@Produces(MediaType.TEXT_HTML)
-//	public Response update(){
-//		return Response.ok(new Viewable("/tasks/index")).build();
-//	}
-//	
-//	@DELETE
-//	@Path("{task}")
-//	public Response delete(){
-//		return Response.ok(new Viewable("/tasks/index")).build();
-//	}
+	@DELETE
+	@Path("{id}")
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public boolean deleteUser(@PathParam("id") String id) {
+		try {
+			Calendar calendar = new Calendar();
+			PersistenceManager pm = PMF.get().getPersistenceManager();
+			try {
+				User u = pm.getObjectById(User.class, id);
+				pm.deletePersistent(u);
+				calendar.removeUser(u);
+				return true;
+			} finally {
+				pm.close();
+			}
+
+		} catch (IOException e) {
+			onAuthorization(request, response);
+		}
+		return false;
+	}
 
 	@GET
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -171,14 +169,14 @@ public class UsersController extends AbstractController {
 			pm.close();
 		}
 	}
-	
+
 	@GET
 	@Path("{key}")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public User getUser(@PathParam("key") String key) {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
-	    User u = pm.getObjectById(User.class, key);
-	    return u;
+		User u = pm.getObjectById(User.class, key);
+		return u;
 	}
-	
+
 }

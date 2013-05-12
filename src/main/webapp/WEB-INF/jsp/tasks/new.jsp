@@ -17,14 +17,14 @@
   	<div class="control-group">
 		<label class="control-label" for="inputStartAt">Start at:</label>
 	    <div class="controls">
-	    	<input type="text" id="inputStartAt" name="startAt" placeholder="Start At" value="${startAt}">
+	    	<input type="date" id="inputStartAt" name="startAt" placeholder="Start At" value="${startAt}">
 	    </div>
 	</div>
 	
 	<div class="control-group">
 		<label class="control-label" for="inputDeadLineAt">DeadLine at:</label>
 	    <div class="controls">
-	    	<input type="text" id="inputDeadLineAt"  name="deadLineAt" placeholder="DeadLine At" value="${deadLineAt}">
+	    	<input type="date" id="inputDeadLineAt"  name="deadLineAt" placeholder="DeadLine At" value="${deadLineAt}">
 	    </div>
 	</div>
 	
