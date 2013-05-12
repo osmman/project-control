@@ -215,6 +215,20 @@ public class TasksController extends AbstractController {
 		}
 	}
 	
+	@GET
+	@Path("calendar")
+	@Produces(MediaType.TEXT_HTML)
+	public Response calendar() {
+		//create();
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("tasks", getTasks());
+		map.put("activePage", 5);
+		map.put("posible", possibleUser());
+		map.put("title", "Task list");
+		map.put("page", "/tasks/calendar.jsp");
+		return Response.ok(new Viewable("/tasks/router", map)).build();
+	}
+	
 	public boolean possibleUser(){
 		UserService userService = UserServiceFactory.getUserService();
 		com.google.appengine.api.users.User user = userService.getCurrentUser();
