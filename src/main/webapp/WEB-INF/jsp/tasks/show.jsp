@@ -41,18 +41,18 @@
 	
 	<tr>
 		<th>Created at:</th>
-		<td><fmt:formatDate value="${it.task.createdAt}" pattern="MM.dd.yy" /></td>
+		<td><fmt:formatDate value="${it.task.createdAt}" pattern="dd.MM.yy" /></td>
 	</tr>
 	
 	<tr>
 		<th>Start at:</th>
-		<td><fmt:formatDate value="${it.task.startAt}" pattern="MM.dd.yy" /></td>
+		<td><fmt:formatDate value="${it.task.startAt}" pattern="dd.MM.yy" /></td>
 	</tr>
 	
 	
 	<tr>
 		<th>Deadline:</th>
-		<td><fmt:formatDate value="${it.task.deadLineAt}" pattern="MM.dd.yy" /></td>
+		<td><fmt:formatDate value="${it.task.deadLineAt}" pattern="dd.MM.yy" /></td>
 	</tr>
 	
 	<tr>

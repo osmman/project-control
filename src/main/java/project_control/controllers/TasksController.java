@@ -117,7 +117,7 @@ public class TasksController extends AbstractController {
 			Task t = pm.getObjectById(Task.class, key);
 			try {
 		        t.setTitle(title);
-		        DateFormat formatter = new SimpleDateFormat("MM.dd.yy");
+		        DateFormat formatter = new SimpleDateFormat("dd.MM.yy");
 		        t.setStartAt(formatter.parse(startAt));
 		        t.setDeadLineAt(formatter.parse(deadLineAt));
 		        t.setAssigned(assigned);
@@ -162,7 +162,7 @@ public class TasksController extends AbstractController {
 			try {
 
 				task.setTitle(title);
-				DateFormat formatter = new SimpleDateFormat("MM.dd.yy");
+				DateFormat formatter = new SimpleDateFormat("dd.MM.yy");
 				task.setCreatedAt(new Date());
 				task.setStartAt(formatter.parse(startAt));
 				task.setDeadLineAt(formatter.parse(deadLineAt));

@@ -31,9 +31,9 @@
 			<td>${task.created}</td>
 			<td>${task.assigned}</td>
 			<td>${task.fixed}</td>
-			<td><fmt:formatDate value="${task.createdAt}" pattern="MM.dd.yy" /></td>
-			<td><fmt:formatDate value="${task.startAt}" pattern="MM.dd.yy" /></td>
-			<td><fmt:formatDate value="${task.deadLineAt}" pattern="MM.dd.yy" /></td>
+			<td><fmt:formatDate value="${task.createdAt}" pattern="dd.MM.yy" /></td>
+			<td><fmt:formatDate value="${task.startAt}" pattern="dd.MM.yy" /></td>
+			<td><fmt:formatDate value="${task.deadLineAt}" pattern="dd.MM.yy" /></td>
 			<td><c:if test="${task.parentTask != null}"><a href="/tasks/${task.parentTask}">#${task.parentTask}</a></c:if></td>
 			<td>
 				<form action="/tasks/delete" method="post"><button name="key" type="submit" value="${task.key}" class="btn btn-danger">Delete</button></form>

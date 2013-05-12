@@ -24,14 +24,14 @@
   	<div class="control-group">
 		<label class="control-label" for="inputStartAt">Start at:</label>
 	    <div class="controls">
-	    	<input type="text" id="inputStartAt" name="startAt" placeholder="Start At" value="<fmt:formatDate value="${it.task.startAt}" pattern="MM.dd.yy" />">
+	    	<input type="text" id="inputStartAt" name="startAt" placeholder="Start At" value="<fmt:formatDate value="${it.task.startAt}" pattern="dd.MM.yy" />">
 	    </div>
 	</div>
 	
 	<div class="control-group">
 		<label class="control-label" for="inputDeadLineAt">DeadLine at:</label>
 	    <div class="controls">
-	    	<input type="text" id="inputDeadLineAt"  name="deadLineAt" placeholder="DeadLine At" value="<fmt:formatDate value="${it.task.deadLineAt}" pattern="MM.dd.yy" />">
+	    	<input type="text" id="inputDeadLineAt"  name="deadLineAt" placeholder="DeadLine At" value="<fmt:formatDate value="${it.task.deadLineAt}" pattern="dd.MM.yy" />">
 	    </div>
 	</div>
 	
