@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <h1>Dashboard</h1>
-<h2>Hello, world! ${it.calendar} ${it.files}</h2>
+<h2>Hello, world! ${it.calendars} ${it.files}</h2>
 	
 <c:choose>
 	<c:when test="${user != null}">

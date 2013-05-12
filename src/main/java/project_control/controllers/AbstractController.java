@@ -28,7 +28,7 @@ abstract class AbstractController {
 		}
 		return Response.serverError().build();
 	}
-	
+		
 	void errorMessage(Object o){
 		request.setAttribute("error", o);
 	}
